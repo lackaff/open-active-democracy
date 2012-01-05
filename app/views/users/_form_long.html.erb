@@ -132,8 +132,11 @@
                   var RecaptchaOptions = { theme : 'clean' };
                 </script>
                 <%= recaptcha_tags %><br>
-                <%= check_box("user", "terms") %>
-		<%= tr("I accept the terms detailed below", "view/users/_form_long")%>
+                <%= render :partial => "rules_info" %>
+                <div class="accept_terms">
+                  <%= check_box("user", "terms") %>
+                  <%= tr("I accept the terms detailed above", "view/users/_form_long")%>
+                </div>
 
               <% if @priority %>
                 <% if @value == 1 %>
