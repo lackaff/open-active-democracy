@@ -908,7 +908,7 @@ class PrioritiesController < ApplicationController
         # already renamed?
         @activity = ActivityPriorityRenamed.find_by_user_id_and_priority_id(current_user.id,@priority.id)
         if @activity
-          @activity.update_attribute(:updated_at,Time.now)
+          @activity.update_attribute(:changed_at,Time.now)
         else
           @activity = ActivityPriorityRenamed.create(:user => current_user, :priority => @priority)
         end
