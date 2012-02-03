@@ -17,12 +17,12 @@ class SettingsController < ApplicationController
       if users.count > 1 and new_user.facebook_id
         password = params[:user].delete(:password)
         if password == old_user.password
-          @user = new_user
-          @user.facebook_id = old_user.facebook_id
+          @user = old_user
+          @user.facebook_id = new_user.facebook_id
           @user.save
-          old_user.email = old_user.email + ".facebook_merge.#{Time.now.to_i}"
-          old_user.status = "deleted"
-          old_user.save
+          new_user.email = new_user.email + ".facebook_merge.#{Time.now.to_i}"
+          new_user.status = "deleted"
+          new_user.save
         else
           flash[:notice] = tr("Password incorrect", "controller/passwords")
           format.html { render :action => "index" }
