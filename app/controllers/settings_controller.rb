@@ -15,11 +15,11 @@ class SettingsController < ApplicationController
       wrong_password = false
       users = User.find_all_by_email(params[:user][:email])
       old_user, new_user = users.sort_by(&:id)
-      if users.count > 1 and new_user.facebook_id
+      if users.count > 1 and new_user.facebook_uid
         password = params[:user].delete(:password)
         if authed = User.authenticate(old_user.email, password)
           @user = authed
-          @user.facebook_id = new_user.facebook_id
+          @user.facebook_uid = new_user.facebook_uid
           @user.save
           new_user.email = new_user.email + ".facebook_merge.#{Time.now.to_i}"
           new_user.status = "deleted"
