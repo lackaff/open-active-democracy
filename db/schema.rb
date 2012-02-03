@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20112312175740) do
+ActiveRecord::Schema.define(:version => 20120203153903) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -1696,6 +1696,7 @@ ActiveRecord::Schema.define(:version => 20112312175740) do
     t.integer  "report_frequency",                            :default => 2
   end
 
+  add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["facebook_uid"], :name => "index_users_on_facebook_uid"
   add_index "users", ["identifier_url"], :name => "index_users_on_identifier_url", :unique => true
   add_index "users", ["partner_id"], :name => "user_partner_id"
