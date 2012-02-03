@@ -19,11 +19,9 @@ class SettingsController < ApplicationController
         password = params[:user].delete(:password)
         if authed = User.authenticate(old_user.email, password)
           @user = authed
+          self.current_user = @user
           @user.facebook_uid = new_user.facebook_uid
-          new_user.facebook_uid = "#{new_user.facebook_uid}.facebook_merge.#{Time.now.to_i}"
-          new_user.email = "#{new_user.email}.facebook_merge.#{Time.now.to_i}"
-          new_user.status = "deleted"
-          new_user.save
+          new_user.destroy
           @user.save
         else
           wrong_password = true
