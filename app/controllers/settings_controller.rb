@@ -12,6 +12,7 @@ class SettingsController < ApplicationController
   # PUT /settings
   def update
     respond_to do |format|
+      wrong_password = false
       users = User.find_all_by_email(params[:user][:email])
       old_user, new_user = users.sort_by(&:id)
       if users.count > 1 and new_user.facebook_id
@@ -24,14 +25,15 @@ class SettingsController < ApplicationController
           new_user.status = "deleted"
           new_user.save
         else
-          flash[:notice] = tr("Password incorrect", "controller/passwords")
-          format.html { render :action => "index" }
-          return
+          wrong_password = true
         end
       end
-      if @user.update_attributes(params[:user])
+      if wrong_password
+        flash[:notice] = tr("Password incorrect", "controller/passwords")
+        format.html { render :action => "index" }
+      elsif @user.update_attributes(params[:user])
         flash[:notice] = tr("Saved your settings", "controller/settings")
-        format.html { 
+        format.html {
           redirect_to("/") 
         }
       else
