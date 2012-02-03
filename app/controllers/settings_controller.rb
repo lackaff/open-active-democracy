@@ -20,10 +20,11 @@ class SettingsController < ApplicationController
         if authed = User.authenticate(old_user.email, password)
           @user = authed
           @user.facebook_uid = new_user.facebook_uid
-          @user.save
+          new_user.facebook_uid = new_user.facebook_uid + ".facebook_merge.#{Time.now.to_i}"
           new_user.email = new_user.email + ".facebook_merge.#{Time.now.to_i}"
           new_user.status = "deleted"
           new_user.save
+          @user.save
         else
           wrong_password = true
         end
