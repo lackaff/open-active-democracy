@@ -17,8 +17,8 @@ class SettingsController < ApplicationController
       old_user, new_user = users.sort_by(&:id)
       if users.count > 1 and new_user.facebook_id
         password = params[:user].delete(:password)
-        if password == old_user.password
-          @user = old_user
+        if authed = User.authenticate(old_user.email, password)
+          @user = authed
           @user.facebook_id = new_user.facebook_id
           @user.save
           new_user.email = new_user.email + ".facebook_merge.#{Time.now.to_i}"
