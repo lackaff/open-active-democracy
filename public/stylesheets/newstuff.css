@@ -1319,3 +1319,8 @@ margin-top:7px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.pri_pagination {
+  padding-top: 10px;
+  float: right;
+}

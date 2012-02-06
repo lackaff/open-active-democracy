@@ -22,32 +22,37 @@
 
 <p>
 <% if current_user.followings_count > 0 %>
+    <div class="pri_pagination"><%= will_paginate @priorities %></div>
 	<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<td align="right" style="padding-right: 5px;"><span class="table_header"><%= tr("Rank", "view/priorities/network") %></span></td>
+			<td></td>
+            <td style="padding-left: 12px;"><span class="table_header"><%= tr("Rank", "view/priorities/network") %></span></td>
 			<td style="padding-left: 3px;"><span class="table_header"><%= tr("Wk", "view/priorities/network") %></span></td>
 			<td style="padding-left: 3px;"><span class="table_header"><%= tr("Mo", "view/priorities/network") %></span></td>
-			<td style="padding-left: 7px; padding-bottom: 2px;"><%= will_paginate @priorities %></td>	
 		</tr>
 	<% for e in @priorities %>
 		<% if @endorsements %>
 			<% endorsement = @endorsements.detect {|p| p.priority_id == e.priority_id } %>
 		<% end %>
 		<tr>
+          <td class="category_icon">
+            <% if e.priority.category and e.priority.category.icon -%>
+                <%= image_tag e.priority.category.icon.url(:icon_50), :size => "50x50", :border => 0 %>
+            <% end %>
+          </td>
 			<%= render :partial => "priorities/rank_week_month", :locals => {:priority => e.priority } %>
-			
 			<td valign="top" style="padding-left: 8px;">
-				<div id="priority_<%= e.priority_id %>" class="priority_listing">
+				<div id="priority_<%= e.priority_id %>" class="priority_listing" style="padding-top: 10px">
 					<div class="point_name" id="priority_<%= e.priority_id %>_name">
 						<%= link_to_unless_current h(e.priority.name), e.priority, :class => "priority_name_link" %>
 					</div>
 					<%= render :partial => "priorities/tag_show", :locals => { :priority => e.priority }%>	
 					<div class="priority_actions">
 						<%= render :partial => "priorities/button_small", :locals => {:priority => e.priority, :endorsement => endorsement, :region => "priority_inline"} %>
-						<span class="priority_endorsement_count" id="network_<%= e.priority_id.to_s %>_endorsement_count">
+						<div class="priority_endorsement_count" id="network_<%= e.priority_id.to_s %>_endorsement_count" style="margin-top: 2px">
 							<%= tr("{count} people in your network", "view/priorities/network", :count => e.endorsements_number.to_i)%>
 							<% if e.priority.discussions_count > 0 %> &middot; <%= link_to tr("{count} discussions", "view/priorities/network", :count => e.priority.discussions_count), discussions_priority_url(e.priority) %><% end %><% if e.priority.is_official_endorsed? %> &middot; <%= current_government.official_user_short_name %> <span class="endorsed"><%= tr("endorses", "view/priorities/network")%></span><% elsif e.priority.is_official_opposed? %> &middot; <%= current_government.official_user_short_name %> <span class="opposed"><%= tr("opposes", "view/priorities/network")%></span><% end %>
-						</span>
+						</div>
 					</div>
 				</div>			
 			</td>
