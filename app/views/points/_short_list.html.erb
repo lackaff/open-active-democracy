@@ -19,7 +19,7 @@
           <%= link_to tr("Edit", "view/points/_short_list"), new_point_revision_url(point), :title => tr("Can you make this point more persuasive? Go ahead, change it!", "view/points/_short_list") %>
 			</span>
       </div>
-      <p><%= tg(point.content) %></p>
+      <p><%= tg(point.content_html) %></p>
       <% if point.has_website? %>
           <div class="point_source">
             <%= tr("Source:", "view/points/_show") %>
