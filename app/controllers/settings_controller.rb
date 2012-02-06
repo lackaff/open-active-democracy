@@ -13,18 +13,21 @@ class SettingsController < ApplicationController
   def update
     respond_to do |format|
       wrong_password = false
-      users = User.find_all_by_email(params[:user][:email])
-      old_user, new_user = users.sort_by(&:id)
-      if users.count > 1 and new_user.facebook_uid
-        password = params[:user].delete(:password)
-        if authed = User.authenticate(old_user.email, password)
-          @user = authed
-          self.current_user = @user
-          @user.facebook_uid = new_user.facebook_uid
-          new_user.destroy
-          @user.save
-        else
-          wrong_password = true
+
+      if params[:user][:email]
+        users = User.find_all_by_email(params[:user][:email])
+        old_user, new_user = users.sort_by(&:id)
+        if users.count > 1 and new_user.facebook_uid
+          password = params[:user].delete(:password)
+          if authed = User.authenticate(old_user.email, password)
+            @user = authed
+            self.current_user = @user
+            @user.facebook_uid = new_user.facebook_uid
+            new_user.destroy
+            @user.save
+          else
+            wrong_password = true
+          end
         end
       end
       if wrong_password
