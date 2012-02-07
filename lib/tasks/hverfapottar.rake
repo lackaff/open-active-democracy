@@ -98,4 +98,28 @@ namespace :hverfapottar do
       end
     end
   end
+
+  desc "make hverfapottar active"
+  task :make_active => :environment do
+    Partner.transaction do
+      Partner.all.each do |partner|
+        if partner.short_name =~ /^betri-hverfi/
+          partner.status = "passive"
+          partner.save
+        end
+      end
+    end
+  end
+
+  desc "make hverfapottar inactive"
+  task :make_inactive => :environment do
+    Partner.transaction do
+      Partner.all.each do |partner|
+        if partner.short_name =~ /^betri-hverfi/
+          partner.status = "inactive"
+          partner.save
+        end
+      end
+    end
+  end
 end

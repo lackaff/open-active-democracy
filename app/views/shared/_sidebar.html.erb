@@ -64,7 +64,7 @@
 		</li>
 </ul></div>
 
-<%= render :partial => "priorities/new_button" unless current_partner %>
+<%= render :partial => "priorities/new_button" unless current_partner and current_partner.status == "inactive" %>
 <%= render :partial => "shared/social_media_buttons" %>
 <%= render :partial => "shared/rvk_countdown" if Government.current.layout == "better_reykjavik" -%>
 
