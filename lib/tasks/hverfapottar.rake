@@ -86,4 +86,16 @@ namespace :hverfapottar do
         item_limit: 3
     )
   end
+
+  desc "add parent tag"
+  task :add_parent_tag => :environment do
+    Partner.transaction do
+      Partner.all.each do |partner|
+        if partner.short_name =~ /^betri-hverfi/
+          partner.parent_tag = "Betri hverfi"
+          partner.save
+        end
+      end
+    end
+  end
 end
