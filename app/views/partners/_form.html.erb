@@ -55,4 +55,13 @@
     </div>
   </div>
 
+<div class="field">
+    <div class="field_label">
+      <%= tr("Message to users", "view/governments/edit") %>
+    </div>
+    <div class="field_box">
+      <%= f.text_area :message_to_users, :rows => 7, :cols=>20 %>
+    </div>
+  </div>
+
 <%= f.check_box :is_daily_summary %> <%= tr("Email me a weekly summary of activity", "view/partners/_form") %><br/>
