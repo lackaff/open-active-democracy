@@ -10,8 +10,10 @@ class IssuesController < ApplicationController
     @categories = Category.all.collect { |category| Tag.find_by_name(category.name) }
     partner_tags = {}
     Partner.all.each do |partner|
-      partner.required_tags.split(',').each do |tag|
-        partner_tags[tag] = true
+      if partner.required_tags
+        partner.required_tags.split(',').each do |tag|
+          partner_tags[tag] = true
+        end
       end
     end
     @partner_tags = partner_tags.keys.collect { |t| Tag.find_by_name(t) }
