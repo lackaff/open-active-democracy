@@ -41,7 +41,7 @@ gem 'whenever', :require => false
 gem 'geoip'
 gem 'htmlentities'
 gem 'auto_html'
-gem 'delayed_job'
+gem 'delayed_job','2.1.4'
 gem 'rmagick','2.12.2'
 #gem 'mongrel', '>= 1.2.0.pre2'
 gem 'paperclip'
