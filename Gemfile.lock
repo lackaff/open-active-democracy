@@ -203,7 +203,7 @@ DEPENDENCIES
   capistrano
   ckeditor
   dalli
-  delayed_job
+  delayed_job (= 2.1.4)
   facebooker2
   geoip
   googlecharts
