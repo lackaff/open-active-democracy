@@ -1,4 +1,8 @@
-<% if Government.current.message_to_users and Government.current.message_to_users!="" and not current_partner %>
+<% if current_partner %>
+  <% if current_partner.message_to_users and current_partner.message_to_users != "" %>
+    <%= render :partial=>"/shared/top_message_box", :locals=> {:message_text => current_partner.message_to_users.html_safe } %>
+  <% end %>
+<% elsif Government.current.message_to_users and Government.current.message_to_users!="" %>
   <%= render :partial=>"/shared/top_message_box", :locals=> {:message_text => Government.current.message_to_users.html_safe } %>
 <% end %>
 
