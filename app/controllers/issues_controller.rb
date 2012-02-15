@@ -9,7 +9,8 @@ class IssuesController < ApplicationController
     #if request.format != 'html' or current_government.tags_page == 'list'
     @categories = Category.all.collect { |category| Tag.find_by_name(category.name) }
     @partner_tags = []
-    if current_partner.required_tags
+    
+    if current_partner and current_partner.required_tags
       partner_tags = {}
       Partner.all.each do |partner|
         partner.required_tags.split(',').each do |tag|

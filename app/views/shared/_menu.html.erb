@@ -110,12 +110,12 @@
 						<%= link_to tr("Categories", "view/shared/_menu"), "/categories" %>
 						&middot;
 						<%= link_to tr("Settings", "view/shared/_menu"), edit_government_url(current_government) %>
-						&middot;
+						&middot;<br/>
             <%= link_to tr("All Flagged", "view/shared/_menu"), "/admin/all_flagged" %>
             &middot;
 						<% if current_government.is_tags? %>
-							&middot; <%= link_to current_government.tags_name.pluralize.titleize, tags_url %>
-						<% end %>
+						 <%= link_to current_government.tags_name.pluralize.titleize, tags_url %>
+						<% end %> <br/>
 						&middot; <%= link_to tr("API keys", "view/shared/_menu"), apis_government_url(current_government) %>							
 						<br/>
 						<%= link_to tr("Pages", "view/shared/_menu"), pages_url %>

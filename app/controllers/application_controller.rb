@@ -153,6 +153,13 @@ class ApplicationController < ActionController::Base
 
   # Will either fetch the current partner or return nil if there's no subdomain
   def current_partner
+    
+    return nil
+=begin  
+    if Rails.env.development? 
+      return nil
+    end
+=end
     if Rails.env.development?
       if params[:partner_short_name]
         if params[:partner_short_name].empty?

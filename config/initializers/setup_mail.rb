@@ -1,3 +1,4 @@
+=begin
 ActionMailer::Base.smtp_settings = {  
   :address              => "localhost",  
   :enable_starttls_auto => false
@@ -24,3 +25,5 @@ elsif Rails.env.production?
 
   Mail.register_interceptor(DevelopmentMailInterceptor)
 end
+
+=end

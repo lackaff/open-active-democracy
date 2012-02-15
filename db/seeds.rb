@@ -8,35 +8,23 @@
 
 # Create Categories
 
-Category.create(:name=>"Framkvæmdir")
-Category.create(:name=>"Skipulagsmál")
-Category.create(:name=>"Samgöngur")
-Category.create(:name=>"Velferðarmál")
-Category.create(:name=>"Ferðamál")
-Category.create(:name=>"Umhverfismál")
-Category.create(:name=>"Menntamál")
-Category.create(:name=>"Frístundir og útivist")
-Category.create(:name=>"Íþróttir")
-Category.create(:name=>"Menning og listir")
-Category.create(:name=>"Mannréttindi")
-Category.create(:name=>"Stjórnsýsla")
-Category.create(:name=>"Alls konar")
 
 if true
-  Category.create(:name=>"Welfare")
-  Category.create(:name=>"Law")
-  Category.create(:name=>"Arts")
-  Category.create(:name=>"Sports")
-  Category.create(:name=>"Environment")
-  Category.create(:name=>"Police")
-  Category.create(:name=>"Public services")
-  Category.create(:name=>"Military")
-  Category.create(:name=>"Economy")
-  Category.create(:name=>"Constitution")
-  Category.create(:name=>"Banks")
-  Category.create(:name=>"Entertainment")
-  Category.create(:name=>"Immigration")
-  Category.create(:name=>"Other")
+  Category.create(:name=>"Welfare", :description=>"Enter category description")
+  Category.create(:name=>"Law", :description=>"Enter category description")
+  Category.create(:name=>"Arts", :description=>"Enter category description")
+  Category.create(:name=>"Sports", :description=>"Enter category description")
+  Category.create(:name=>"Environment", :description=>"Enter category description")
+  Category.create(:name=>"Police", :description=>"Enter category description")
+  Category.create(:name=>"Public services", :description=>"Enter category description")
+  Category.create(:name=>"Military", :description=>"Enter category description")
+  Category.create(:name=>"Economy", :description=>"Enter category description")
+  Category.create(:name=>"Constitution", :description=>"Enter category description")
+  Category.create(:name=>"Banks", :description=>"Enter category description")
+  Category.create(:name=>"Entertainment", :description=>"Enter category description")
+  Category.create(:name=>"Immigration", :description=>"Enter category description")
+  Category.create(:name=>"Other", :description=>"Enter category description")
+  
 else
   unless partner = Partner.find_by_short_name("dev")
     partner = Partner.create(:name=>"development", :short_name=>"dev")
@@ -46,6 +34,12 @@ else
   Category.create(:name=>"Localization", :partner_id=>partner.id)
   Category.create(:name=>"Data sources", :partner_id=>partner.id)
 end
+
+# Create required entries in tag table
+cat = Category.all
+cat.each do |c|
+   Tag.create(:name=>c.name, :title=>c.name, :slug=>c.name.downcase)
+ end
 
 p=Partner.new
 p.name = "The European Union and EEA"

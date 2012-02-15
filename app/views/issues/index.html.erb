@@ -20,7 +20,7 @@
 
 <table>
 <tr>
-  <% if current_partner.required_tags %>
+  <% if not @partner_tags.empty? and current_partner.required_tags %>
       <td width="33%">
   <% else %>
       <td width="50%">
@@ -28,7 +28,7 @@
   <h3><%= tr("Standard categories", "views/issues/index") %></h3>
   <%= render partial: 'issue_listing', locals: { issues: @categories } %>
   </td>
-  <% if current_partner.required_tags %>
+  <% if current_partner and current_partner.required_tags %>
       <td width="33%">
         <% if not @partner_tags.empty? %>
             <h3><%= tr("Better neighborhoods", "views/issues/index") %></h3>
@@ -45,7 +45,7 @@
         <% end %>
       </td>
   <% end %>
-  <% if current_partner.required_tags %>
+  <% if current_partner and current_partner.required_tags %>
       <td width="33%">
   <% else %>
       <td width="50%">
