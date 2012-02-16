@@ -3,6 +3,9 @@ class Government < ActiveRecord::Base
   extend ActiveSupport::Memoizable
   require 'paperclip'
   
+  #CURRENT_LANGUAGES = [ ["en", "English"], ["fr", "French"], ["de", "German"] ]
+  CURRENT_LANGUAGES = [ "en", "fr", "de" ]
+  
   scope :active, :conditions => "status = 'active'"
   scope :pending, :conditions => "status = 'pending'"
   scope :least_active, :conditions => "status = 'active'", :order => "users_count"

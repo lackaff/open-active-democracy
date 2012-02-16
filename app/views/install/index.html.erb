@@ -67,7 +67,7 @@
 					<div class="field">
 						<div class="field_label">
 							Language:
-							<%= f.collection_select :language_code, [], :first, :last %>
+							<%= f.select :language_code, Government::CURRENT_LANGUAGES %>
 						</div>
 					</div>
 			
