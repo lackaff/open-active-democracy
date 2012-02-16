@@ -1,0 +1,35 @@
+<div id="branding" style="height: 85px">
+  <table>
+    <tr>
+      <td>
+        <div id="main_logo">
+          <%= link_to :controller=>"portal", :host=>"0.0.0.0:3000" do %>
+            <%= image_tag "/images/your_logo_140.gif"%>
+          <% end %>
+        </div>
+      </td>
+      <td>
+        <div id="branding_text">
+          <div id="branding_text_header">
+            <%=tr("{government_name}","views/shared/_branding", :government_name => tr(current_government.name,"Name from database"))%>
+          </div>
+          <div id="branding_text_sub">
+            <%=request.host%>
+          </div>
+        </div>
+      </td>
+
+      <% if false and current_partner %>
+        <td>
+          <div id="partner_logo">
+            <%= render :partial => "partners/logo" %>
+          </div>
+        </td>
+      <% end %>
+      <td>
+
+
+      </td>  
+    </tr>
+  </table>
+</div>

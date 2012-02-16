@@ -13,7 +13,7 @@
           <% if @government.layout.include?("better_reykjavik") %>
               <h1><%= image_tag "logos/BR_email.png", :alt=>tr("{government_name}", "email", :government_name => tr(@government.name, "Name from database")) %></h1>
           <% else %>
-              <h1><%= image_tag "logos/YourPriorities_large.png", :alt=>tr("{government_name}", "email", :government_name => tr(@government.name, "Name from database")) %></h1>
+              <h1><%= image_tag "your_logo.gif", :alt=>tr("{government_name}", "email", :government_name => tr(@government.name, "Name from database")) %></h1>
           <% end %>
       <% end %>
     </td>

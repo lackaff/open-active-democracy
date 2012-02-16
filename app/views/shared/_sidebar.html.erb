@@ -10,11 +10,14 @@
 	    </div>
     <% end %>
 
+
   <% else %>
-    <div class="yrpri_icon">
+<!--    
+<div class="yrpri_icon">
 		<a href="http://yrpri.org"><%= image_tag("new/yourprioritiesworldwide.png", :alt => "Your Priorities Worldwide") %></a>
-	</div>
+	</div> -->
   <% end %>
+
 	<%= render :partial => "shared/partner_large_flag" %>
     <%= render :partial => "shared/search" %>
 
@@ -94,10 +97,12 @@
 
  </div> 
 
-
-  <div class="gamlabetri">
+<!--
+<div class="gamlabetri">
 <a href="http://betrireykjavik.skuggaborg.is/portal"><img src="/images/new/gamlabr.png" alt="Allar hugmyndirnar af upphaflegu Betri Reykjavík"></a>
 </div>
+-->
+
   <% if logged_in? %>
     <div id="priority_column" class="userwrap">
       <%= render :partial => "shared/your_priorities" %>
@@ -115,8 +120,9 @@
 
   <%= render :partial => "shared/fb_activity_feed" %>
 
+<!--
 <div class="yourpri_logo">		
 		<a href="http://ibuar.is"><%= image_tag("new/ibuar-logo.png", :alt => "shortcut") %></a>  
-	</div>
+</div> -->
 
 </div>
