@@ -161,7 +161,6 @@ ul#menu li.hovering div.tab_body, ul#menu_sub li.hovering div.tab_body, ul#menu_
 	padding: 10px 10px 2px 10px;	
 	margin-top: 1px;
 	z-index: 10;
-
 }
 
 ul#menu1 li.hovering div.tab_body { 
@@ -249,6 +248,11 @@ ul#menu li.tab7 div.tab_body {
 	width:270px;
 }
 */
+
+ul#menu li.tab6 div.tab_body {
+	width:150px;
+}
+
 ul#menu li .tab_body {
 	border: 1px solid #666;
 	border-top: 0px;
