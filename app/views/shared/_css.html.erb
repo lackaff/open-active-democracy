@@ -1,24 +1,14 @@
-<%= stylesheet_link_tag("/stylesheets/nb","/stylesheets/facebox") %>
-
 <% if ['color_schemes'].include?(params[:controller]) %>
-	<%= stylesheet_link_tag "colorpicker" %>
+    <%= stylesheet_link_tag "colorpicker" %>
 <% end %>
 
+<%= render :partial => "color_schemes/css", :locals => {:id => current_government.color_scheme_id } %>
+
+<%= stylesheet_link_tag "/stylesheets/main" %>
+
 <!--[if IE]>
-<style type="text/css">
-/*#nav, #nav_sub, #nav_third, #priority_nav {letter-spacing: -0.1em;}*/
-.tab_body {
-	position: absolute;
-	top: 14px;
-	/*left: 0px;*/
-}
-ul#priority_menu div.tab_body {
-	position: absolute;
-	top: 15px;
-	/*left: 0px;*/
-}
-ul#menu li, ul#menu_sub li, ul#menu_third li, ul#priority_menu li {
-	display: inline;
-}
-</style>
+<%= stylesheet_link_tag "/stylesheets/iehacks" %>
+<![endif]-->
+<!--[if IE 7]>
+<%= stylesheet_link_tag "/stylesheets/ie7" %>
 <![endif]-->

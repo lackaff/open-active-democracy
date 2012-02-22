@@ -75,3 +75,4 @@ group :development do
 end
 
 gem 'ckeditor'
+gem 'sass'

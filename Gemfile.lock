@@ -175,6 +175,7 @@ GEM
     rmagick (2.12.2)
     ruby-hmac (0.4.0)
     ruby-openid (2.1.8)
+    sass (3.1.12)
     sunlight (1.1.0)
       json (>= 1.1.3)
       ym4r (>= 0.6.1)
@@ -223,6 +224,7 @@ DEPENDENCIES
   recaptcha
   rmagick (= 2.12.2)
   ruby-openid
+  sass
   sunlight (>= 0.9)
   sys-filesystem
   thinking-sphinx!
