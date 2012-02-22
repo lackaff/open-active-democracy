@@ -26,7 +26,7 @@ class Tr8n::ForumController < Tr8n::BaseController
   before_filter :validate_current_translator
   
   def index
-    @topics = Tr8n::LanguageForumTopic.paginate(:all, :conditions => ["language_id = ?", tr8n_current_language.id], :page => page, :per_page => per_page, :order => "created_at desc")
+    @topics = Tr8n::LanguageForumTopic.paginate(:conditions => ["language_id = ?", tr8n_current_language.id], :page => page, :per_page => per_page, :order => "created_at desc")
   end
 
   def topic
