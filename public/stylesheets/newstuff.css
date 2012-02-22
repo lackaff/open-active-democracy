@@ -1314,3 +1314,13 @@ margin-top:7px;
     font-size: 11px;
     font-weight: normal;
 }
+
+.accept_terms {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.pri_pagination {
+  padding-top: 10px;
+  float: right;
+}
