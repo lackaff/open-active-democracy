@@ -73,7 +73,7 @@ module AuthenticatedSystem
     # to access the requested action.  For example, a popup window might
     # simply close itself.
     def access_denied
-      Rails.logger.info("IN ACCESS DENIED #{request.request_uri}")
+      Rails.logger.info("IN ACCESS DENIED #{request.url}")
       flash[:error] = tr("Please login","lib/authenticated_system")
       respond_to do |format|
         format.html do
@@ -97,18 +97,18 @@ module AuthenticatedSystem
     #
     # We can return to this location by calling #redirect_back_or_default.
     def store_location
-      Rails.logger.info("IN STORE LOCATION #{request.request_uri}")
-      session[:return_to] = request.request_uri
+      Rails.logger.info("IN STORE LOCATION #{request.url}")
+      session[:return_to] = request.url
       Rails.logger.info("IN STORE LOCATION session #{session[:return_to]}")
     end
     
     def store_previous_location
-      Rails.logger.info("IN STORE PREVIOUS LOCATION #{request.request_uri}")
+      Rails.logger.info("IN STORE PREVIOUS LOCATION #{request.url}")
       session[:return_to] = request.env['HTTP_REFERER'] || '/'    
     end
     
     def get_previous_location(default='/')
-      Rails.logger.info("IN GET PREVIOUS LOCATION #{request.request_uri} SETTING TO NIL")
+      Rails.logger.info("IN GET PREVIOUS LOCATION #{request.url} SETTING TO NIL")
       #session[:return_to] = nil       
       return session[:return_to] || default     
     end
@@ -141,7 +141,7 @@ module AuthenticatedSystem
         if current_facebook_user
           Rails.logger.info("LOGIN: fbuid #{current_facebook_user.id}")
           if u = User.find_by_facebook_uid(current_facebook_user.id)
-            Rails.logger.info("LOGIN: fb FOUND ONE")          
+            Rails.logger.info("LOGIN: fb FOUND ONE")
             return u
           end
           Rails.logger.info("LOGIN: About to fb create")

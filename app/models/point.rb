@@ -16,8 +16,8 @@ class Point < ActiveRecord::Base
   scope :by_recently_created, :order => "points.created_at desc"
   scope :by_recently_updated, :order => "points.updated_at desc"  
   scope :flagged, :conditions => "flags_count > 0" 
-  scope :published, :conditions => "questions.status = 'published'"
-  scope :unpublished, :conditions => "questions.status not in ('published','abusive')"
+  scope :published, :conditions => "points.status = 'published'"
+  scope :unpublished, :conditions => "points.status not in ('published','abusive')"
 
   scope :revised, :conditions => "revisions_count > 1"
   scope :top, :order => "points.score desc"
@@ -33,8 +33,6 @@ class Point < ActiveRecord::Base
   has_many :revisions, :dependent => :destroy
   has_many :activities, :dependent => :destroy, :order => "activities.created_at desc"
 
-  has_one :author_user, :through => :revisions, :select => "distinct users.*", :source => :user, :class_name => "User", :order => "revisions.created_at ASC"
-  has_one :last_author, :through => :revisions, :select => "distinct users.*", :source => :user, :class_name => "User", :order => "revisions.created_at DESC"
   has_many :author_users, :through => :revisions, :select => "distinct users.*", :source => :user, :class_name => "User"
   
   has_many :point_qualities, :order => "created_at desc", :dependent => :destroy
@@ -51,6 +49,14 @@ class Point < ActiveRecord::Base
     indexes priority.category.name, :facet=>true, :as=>"category_name"
     has partner_id, :as=>:partner_id, :type => :integer
     where "points.status = 'published'"    
+  end
+
+  def author_user
+    self.author_users.order("revisions.created_at ASC").first
+  end
+
+  def last_author
+    self.author_users.order("revisions.created_at DESC").last
   end
   
   def category_name
@@ -79,43 +85,36 @@ class Point < ActiveRecord::Base
   # this is actually just supposed to be 500, but bumping it to 520 because the javascript counter doesn't include carriage returns in the count, whereas this does.
   validates_length_of :content, :within => 5..520, :too_long => tr("has a maximum of 500 characters", "model/point"), 
                                                    :too_short => tr("please enter more than 5 characters", "model/point")
-  
-  # docs: http://www.practicalecommerce.com/blogs/post/122-Rails-Acts-As-State-Machine-Plugin
-  acts_as_state_machine :initial => :published, :column => :status
-  
-  state :draft
-  state :published, :enter => :do_publish
-  state :deleted, :enter => :do_delete
-  state :buried, :enter => :do_bury
-  state :abusive, :enter => :do_abusive
-  
-  event :publish do
-    transitions :from => [:draft], :to => :published
-  end
-  
-  event :delete do
-    transitions :from => [:draft, :published,:buried], :to => :deleted
+
+  after_create :on_published_entry
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :published do
+      event :delete, transitions_to: :deleted
+      event :bury, transitions_to: :buried
+      event :abusive, transitions_to: :abusive
+    end
+    state :draft do
+      event :publish, transitions_to: :published
+      event :delete, transitions_to: :deleted
+      event :bury, transitions_to: :buried
+    end
+    state :deleted do
+      event :bury, transitions_to: :buried
+      event :undelete, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :undelete, transitions_to: :draft
+    end
+    state :buried do
+      event :delete, transitions_to: :deleted
+      event :unbury, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :unbury, transitions_to: :draft
+    end
+    state :abusive
   end
 
-  event :undelete do
-    transitions :from => :deleted, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :deleted, :to => :draft 
-  end
-  
-  event :bury do
-    transitions :from => [:draft, :published, :deleted], :to => :buried
-  end
-  
-  event :unbury do
-    transitions :from => :buried, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :buried, :to => :draft     
-  end
-
-  event :abusive do
-    transitions :from => :published, :to => :abusive
-  end
-
-  def do_abusive
+  def on_abusive_entry(new_state, event)
     self.last_author.do_abusive!(notifications)
     self.update_attribute(:flags_count, 0)
   end
@@ -127,13 +126,13 @@ class Point < ActiveRecord::Base
     end
   end
 
-  def do_publish
+  def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
     add_counts
     priority.save(:validate => false)    
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     remove_counts
     activities.each do |a|
       a.delete!
@@ -154,9 +153,9 @@ class Point < ActiveRecord::Base
  
   def ensure_request_and_user_are_set
     if self.priority
-      self.ip_address = self.priority.ip_address
-      self.user_agent = self.priority.user_agent
-      self.user_id = self.priority.user_id
+      self.ip_address = self.priority.ip_address if not self.ip_address
+      self.user_agent = self.priority.user_agent if not self.user_agent
+      self.user_id = self.priority.user_id if not self.user_id
       Rails.logger.debug("SELF PRIORITY: #{pp self.priority.inspect}")
     else
       Rails.logger.error("No Priority for point id: #{self.id}")
@@ -164,7 +163,7 @@ class Point < ActiveRecord::Base
     end
   end
   
-  def do_bury
+  def on_buried_entry(new_state, event)
     remove_counts
     priority.save(:validate => false)    
   end

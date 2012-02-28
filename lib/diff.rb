@@ -1,11 +1,3 @@
-module Enumerable
-  def reduce(init)
-    result = init
-    each { |item| result = yield(result, item) }
-    result
-  end
-end
-
 class Object
   def nil_or_empty?
     nil? or empty?

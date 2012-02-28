@@ -9,7 +9,7 @@ class ImportController < ApplicationController
   protect_from_forgery :except => :windows
   
   def yahoo
-    if not request.request_uri.include?('token')
+    if not request.url.include?('token')
       session[:import_partner_id] = Partner.current.id if Partner.current
       consumer = Contacts::Yahoo.new
       url = consumer.authentication_url

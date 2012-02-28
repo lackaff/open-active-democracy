@@ -40,25 +40,25 @@ class Ad < ActiveRecord::Base
   validates_presence_of :content
   validates_length_of :content, :maximum => 90, :allow_nil => true, :allow_blank => true
 
-  acts_as_state_machine :initial => :active, :column => :status
-  
-  state :inactive, :enter => :do_inactive
-  state :active, :enter => :do_active
-  state :finished, :enter => :do_finished
-    
-  event :start do
-    transitions :from => [:finished, :inactive], :to => :active
-  end
+  after_create :on_active_entry
 
-  event :finish do
-    transitions :from => [:active, :inactive], :to => :finished
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :active do
+      event :finish, transitions_to: :finished
+      event :deactivate, transitions_to: :inactive
+    end
+    state :inactive do
+      event :start, transitions_to: :active
+      event :finish, transitions_to: :finished
+    end
+    state :finished do
+      event :start, transitions_to: :active
+    end
   end
   
-  event :deactivate do
-    transitions :from => [:active], :to => :inactive
-  end  
-  
-  def do_finished
+  def on_finished_entry(new_state, event)
     self.finished_at = Time.now
     row = 0
     for a in Ad.active.most_paid.find(:all, :conditions => ["id <> ?",self.id])
@@ -67,7 +67,7 @@ class Ad < ActiveRecord::Base
     end
   end
   
-  def do_active
+  def on_active_entry(new_state = nil, event = nil)
     row = 0
     for a in Ad.active.most_paid.all
       row += 1
@@ -75,7 +75,7 @@ class Ad < ActiveRecord::Base
     end    
   end
   
-  def do_inactive
+  def on_inactive_entry(new_state, event)
     row = 0
     for a in Ad.active.most_paid.find(:all, :conditions => ["id <> ?",self.id])
       row += 1

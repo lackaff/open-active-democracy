@@ -1,2 +1,2 @@
-<img src="/images/fugue/cross_small.png" height="16" width="16" border="0" class="icon">
-<%= raw tr("No longer finds {point_name} helpful", "view/activities/_activitypointhelpfuldelete_nouser", :user_name => link_to(activity.user.login, activity.user), :point_name => link_to(activity.point.name, activity.point)) %>
+<img src="/assets/fugue/cross_small.png" height="16" width="16" border="0" class="icon">
+<%= raw tr("No longer finds {point_name} helpful", "view/activities/_activitypointhelpfuldelete_nouser", :point_name => link_to(activity.point.name, activity.point)) %>

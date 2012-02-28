@@ -4,7 +4,7 @@
 require 'will_paginate/array'
 
 class ApplicationController < ActionController::Base
-  include Tr8n::CommonMethods
+  #include Tr8n::CommonMethods
   include AuthenticatedSystem
   include FaceboxRender
 
@@ -78,7 +78,7 @@ class ApplicationController < ActionController::Base
   end
   
   def check_missing_user_parameters
-    if logged_in? and Government.current.layout == "better_reykjavik" and controller_name!="settings"
+    if logged_in? and Government.current and Government.current.layout == "better_reykjavik" and controller_name!="settings"
       unless current_user.email and current_user.my_gender and current_user.post_code and current_user.age_group
         flash[:notice] = "Please make sure you have registered all relevant information about you for this website."
         if request.format.js?
@@ -154,25 +154,23 @@ class ApplicationController < ActionController::Base
   # Will either fetch the current partner or return nil if there's no subdomain
   def current_partner
     if Rails.env.development?
-      if params[:partner_short_name]
-        if params[:partner_short_name].empty?
-          session.delete(:set_partner_id)
-          Partner.current = @current_partner = nil
-        else
-          @current_partner = Partner.find_by_short_name(params[:partner_short_name])
+      begin
+        if params[:partner_short_name]
+          if params[:partner_short_name].empty?
+            session.delete(:set_partner_id)
+            Partner.current = @current_partner = nil
+          else
+            @current_partner = Partner.find_by_short_name(params[:partner_short_name])
+            Partner.current = @current_partner
+            session[:set_partner_id] = @current_partner.id
+          end
+        elsif session[:set_partner_id]
+          @current_partner = Partner.find(session[:set_partner_id])
           Partner.current = @current_partner
-          session[:set_partner_id] = @current_partner.id
         end
-      elsif session[:set_partner_id]
-        @current_partner = Partner.find(session[:set_partner_id])
-        Partner.current = @current_partner
-      end
-      if ! @current_partner and
-          ! (controller_name=="home" and action_name=="index") and
-          ! self.class.name.downcase.include?("tr8n") and
-          ! ["endorse","oppose","authorise_google","windows","yahoo"].include?(action_name) and
-        redirect_to "/welcome"
-      end
+      rescue
+        return nil
+        end
       return @current_partner
     elsif request.host.include?("betraisland")
       if request.subdomains.size == 0 or request.host.include?(current_government.domain_name) or request.subdomains.first == 'www'
@@ -309,7 +307,7 @@ class ApplicationController < ActionController::Base
       end
     end
     
-    @google_translate_enabled_for_locale = tr8n_current_google_language_code
+    @google_translate_enabled_for_locale = Tr8n::Config.current_language.google_key
   end
   
   def get_layout

@@ -35,6 +35,16 @@
 				  		<%= f.text_field :name, :size => 40, :maxlength => 60 %>
 						</div>
 					</div>
+
+                  <div class="field">
+                    <div class="field_label">
+                      <%= tr("Description of website", "view/install/index")%>
+                    </div>
+
+                    <div class="field_box">
+                      <%= f.text_field :description, :size => 40 %>
+                    </div>
+                  </div>
 	
 					<div class="field">
 						<div class="field_label">
@@ -54,14 +64,6 @@
               <%= f.text_field :domain_name, :size => 40, :maxlength => 60 %>
             </div>
           </div>
-							
-					<div class="field">
-						<div class="field_label">
-							Language:
-							<%= f.collection_select :language_code, [], :first, :last %>
-						</div>
-					</div>
-			
 					<div class="field">
 						<div class="field_label">
 							<%= tr("Administrator Name", "view/install/index")%>

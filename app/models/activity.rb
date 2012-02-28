@@ -55,25 +55,23 @@ class Activity < ActiveRecord::Base
   has_many :notifications, :as => :notifiable, :dependent => :destroy
   has_many :followings, :class_name => "FollowingDiscussion", :foreign_key => "activity_id", :dependent => :destroy
   has_many :followers, :through => :followings, :source => :user, :select => "DISTINCT users.*"
-  
-  # docs: http://www.vaporbase.com/postings/stateful_authentication
-  acts_as_state_machine :initial => :active, :column => :status
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :active do
+      event :delete, transitions_to: :deleted
+    end
+
+    state :deleted do
+      event :undelete, transitions_to: :active
+    end
+  end
 
   before_save :update_changed_at
   
   def update_changed_at
     self.changed_at = Time.now unless self.attribute_present?("changed_at")
-  end
-  
-  state :active
-  state :deleted, :enter => :do_delete
-  
-  event :delete do
-    transitions :from => :active, :to => :deleted
-  end
-  
-  event :undelete do
-    transitions :from => :deleted, :to => :active
   end
 
   def multi_name
@@ -102,7 +100,7 @@ class Activity < ActiveRecord::Base
     end
   end
 
-  def do_delete
+  def on_deleted_entry(new_state, event)
     # go through and mark all the comments as deleted
     for comment in published_comments
       comment.delete!

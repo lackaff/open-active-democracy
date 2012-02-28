@@ -1,10 +1,9 @@
 <% if ['color_schemes'].include?(params[:controller]) %>
 	<%= javascript_include_tag "colorpicker" %>
 <% end %>
-<%= javascript_include_tag "jquery","rails","facebox","jquery.autocomplete.pack","jquery.NobleCount.min", "jquery.timeago",
+<%= javascript_include_tag "application", "facebox","jquery.autocomplete.pack","jquery.NobleCount.min", "jquery.timeago",
                            "jquery.truncator","autoresize.jquery.min","jquery.defaultvalue","jquery.hoverIntent.minified",
-                           "jquery.bgiframe.min","jquery.corner","jquery.delayedObserver",
-                           "jquery-ui.min", "jquery.endless-scroll", "application" %>
+                           "jquery.bgiframe.min","jquery.corner","jquery.delayedObserver", "jquery.endless-scroll" %>
 <% if ["portal","news"].include?(controller_name) %>
   <%= javascript_include_tag "endless_scrolling_activity" %>
 <% elsif ["priorities"].include?(controller_name) and action_name.include?("show") %>

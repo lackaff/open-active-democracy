@@ -2,9 +2,9 @@
 	Select language: <%= tr8n_language_selector_tag %>
   <% if @inline_translations_allowed %>
     <% if @inline_translations_enabled %>
-      <strong><u><br/><%= link_to_function(trla("Stop translating"), "tr8nLanguageSelector.disableInlineTranslations();") %></u></strong><br/>
+      <strong></u><u><br/><%= link_to_function(trla("Stop translating"), "tr8nLanguageSelector.toggleInlineTranslations();") %></u></strong><br/>
     <% else %>
-      <br/><%= link_to_function(trla("Start translating"), "tr8nLanguageSelector.enableInlineTranslations();") %>
+      <br/><%= link_to_function(trla("Start translating"), "tr8nLanguageSelector.toggleInlineTranslations();") %>
     <% end %>
   <% end %>
   <%= render :partial => "shared/google_translate_select" %>

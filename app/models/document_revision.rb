@@ -8,32 +8,29 @@ class DocumentRevision < ActiveRecord::Base
 
   has_many :activities
   has_many :notifications, :as => :notifiable, :dependent => :destroy
-  
-  # docs: http://www.practicalecommerce.com/blogs/post/122-Rails-Acts-As-State-Machine-Plugin
-  acts_as_state_machine :initial => :draft, :column => :status
-  
-  state :draft
-  state :archived, :enter => :do_archive
-  state :published, :enter => :do_publish
-  state :deleted, :enter => :do_delete
-  
-  event :publish do
-    transitions :from => [:draft, :archived], :to => :published
+
+  after_create :on_published_entry
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :draft do
+      event :publish, transitions_to: :published
+    end
+    state :archived do
+      event :publish, transitions_to: :published
+      event :delete, transitions_to: :deleted
+    end
+    state :published do
+      event :archive, transitions_to: :archived
+      event :delete, transitions_to: :deleted
+    end
+    state :deleted do
+      event :undelete, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :undelete, transitions_to: :draft
+    end
   end
 
-  event :archive do
-    transitions :from => :published, :to => :archived
-  end
-  
-  event :delete do
-    transitions :from => [:published, :archived], :to => :deleted
-  end
-
-  event :undelete do
-    transitions :from => :deleted, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :deleted, :to => :archived 
-  end
-  
   before_save :update_word_count
   
   before_save :truncate_user_agent
@@ -42,7 +39,7 @@ class DocumentRevision < ActiveRecord::Base
     self.user_agent = self.user_agent[0..149] if self.user_agent # some user agents are longer than 150 chars!
   end  
   
-  def do_publish
+  def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
     self.auto_html_prepare
     begin
@@ -95,11 +92,11 @@ class DocumentRevision < ActiveRecord::Base
     user.increment!(:document_revisions_count)
   end
   
-  def do_archive
+  def on_archived_entry(new_state, event)
     self.published_at = nil
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     document.decrement!(:revisions_count)
     user.decrement!(:document_revisions_count)    
   end

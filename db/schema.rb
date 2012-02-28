@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20112312175740) do
+ActiveRecord::Schema.define(:version => 20120312153235) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -1325,6 +1325,17 @@ ActiveRecord::Schema.define(:version => 20112312175740) do
 
   add_index "tr8n_languages", ["locale"], :name => "index_tr8n_languages_on_locale"
 
+  create_table "tr8n_sync_logs", :force => true do |t|
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer  "keys_sent"
+    t.integer  "translations_sent"
+    t.integer  "keys_received"
+    t.integer  "translations_received"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tr8n_translation_domains", :force => true do |t|
     t.string   "name"
     t.string   "description"
@@ -1381,9 +1392,19 @@ ActiveRecord::Schema.define(:version => 20112312175740) do
     t.boolean  "admin"
     t.string   "locale"
     t.integer  "level",             :default => 0
+    t.datetime "synced_at"
   end
 
   add_index "tr8n_translation_keys", ["key"], :name => "index_tr8n_translation_keys_on_key", :unique => true
+
+  create_table "tr8n_translation_source_languages", :force => true do |t|
+    t.integer  "language_id"
+    t.integer  "translation_source_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tr8n_translation_source_languages", ["language_id", "translation_source_id"], :name => "tr8n_tsl_lt"
 
   create_table "tr8n_translation_sources", :force => true do |t|
     t.string   "source"
@@ -1415,6 +1436,7 @@ ActiveRecord::Schema.define(:version => 20112312175740) do
     t.text     "rules"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "synced_at"
   end
 
   add_index "tr8n_translations", ["created_at"], :name => "tr8n_trans_created_at"
@@ -1496,6 +1518,7 @@ ActiveRecord::Schema.define(:version => 20112312175740) do
     t.boolean  "manager"
     t.string   "last_ip"
     t.string   "country_code"
+    t.integer  "remote_id"
   end
 
   add_index "tr8n_translators", ["created_at"], :name => "index_tr8n_translators_on_created_at"
@@ -1747,5 +1770,17 @@ ActiveRecord::Schema.define(:version => 20112312175740) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "will_filter_filters", :force => true do |t|
+    t.string   "type"
+    t.string   "name"
+    t.text     "data"
+    t.integer  "user_id"
+    t.string   "model_class_name"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "will_filter_filters", ["user_id"], :name => "index_will_filter_filters_on_user_id"
 
 end

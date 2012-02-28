@@ -1,3 +1,3 @@
-<img src="/images/icons/coins_add.png" height="16" width="16" border="0" class="icon"/>
+<img src="/assets/icons/coins_add.png" height="16" width="16" border="0" class="icon"/>
 <%= raw tr("{user_name} was refunded {capital}{currency_short_name} for an ad for priority {priority_name} because the priority is now in progress", "view/activities/_activitycapitaladrefunded", :user_name => link_to(activity.user.login, activity.user), :capital => activity.capital.amount.abs, :currency_short_name => current_government.currency_short_name, :priority_name => link_to(activity.priority.name, activity.priority)) %>
 

@@ -10,7 +10,7 @@
     <%= render :partial => "shared/priority_processes_head" if controller_name.index("process") %>
     <%= javascript_include_tag "skuggathing" unless controller_name=="priority_processes" %>
     <% if ["users","sessions"].include?(controller_name)  %>
-      <%= stylesheet_link_tag "/stylesheets/jquery.keypad.css" %>
+      <%= stylesheet_link_tag "jquery.keypad" %>
       <%= javascript_include_tag "jquery.keypad.min" %>
     <% end %>
     <% if controller_name == "priorities" and action_name == "show" %>

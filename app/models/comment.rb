@@ -22,32 +22,28 @@ class Comment < ActiveRecord::Base
   
   validates_presence_of :content
 
-  define_index do
+  define_index do                        event :delete, transitions_to: :deleted
     indexes content
     indexes category_name, :facet=>true, :as=>"category_name"
     has partner_id, :as=>:partner_id, :type => :integer
     where "comments.status = 'published'"
   end
-  
-  # docs: http://www.vaporbase.com/postings/stateful_authentication
-  acts_as_state_machine :initial => :published, :column => :status
-  
-  state :published, :enter => :do_publish
-  state :deleted, :enter => :do_delete  
-  state :abusive, :enter => :do_abusive
-  
-  event :delete do
-    transitions :from => :published, :to => :deleted
+
+  after_create :on_published_entry
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :published do
+      event :delete, transitions_to: :deleted
+      event :abusive, transitions_to: :abusive
+    end
+    state :deleted do
+      event :undelete, transitions_to: :published
+    end
+    state :abusive
   end
-  
-  event :undelete do
-    transitions :from => :deleted, :to => :published
-  end  
-  
-  event :abusive do
-    transitions :from => :published, :to => :abusive
-  end
-  
+
   after_create :set_category
   
   def set_category
@@ -60,7 +56,7 @@ class Comment < ActiveRecord::Base
     end
   end
   
-  def do_publish
+  def on_published_entry(new_state = nil, event = nil)
     self.activity.changed_at = Time.now
     self.activity.comments_count += 1
     self.activity.save(:validate => false)
@@ -95,7 +91,7 @@ class Comment < ActiveRecord::Base
     end
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     if self.activity.comments_count == 1
       self.activity.changed_at = self.activity.created_at
     else
@@ -133,7 +129,7 @@ class Comment < ActiveRecord::Base
     end
   end
   
-  def do_abusive
+  def on_abusive_entry(new_state, event)
     self.user.do_abusive!(notifications)
     self.update_attribute(:flags_count, 0)
   end

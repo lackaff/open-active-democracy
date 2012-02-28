@@ -28,7 +28,7 @@
 		<%= link_to tr("Follow", "view/users/_button_small"), follow_user_path(user, :region => "user_left", :value => 1),
                 :method => :post,
                 :remote=>true,
-                'data-disable-with' => '<span class="priority_add_link priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                'data-disable-with' => '<span class="priority_add_link priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                 'data-loader-name' => "no_loader",
 		            :class => "priority_add_link", :title => tr("I want to follow this person's comments and activity", "view/users/_button_small") %>	
 	</span>
@@ -37,7 +37,7 @@
 		<%= link_to tr("Ignore", "view/users/_button_small"), follow_user_path(user, :region => "user_left", :value => -1),
                 :method => :post,
                 :remote=>true,
-                'data-disable-with' => '<span class="priority_add_link priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                'data-disable-with' => '<span class="priority_add_link priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                 'data-loader-name' => "no_loader",
 		            :class => "priority_add_link", :title => tr("I want to ignore this person's comments and activity", "view/users/_button_small") %>	
 	</span>	

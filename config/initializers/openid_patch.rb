@@ -1,22 +1,4 @@
 module OpenID
-  # Stuff to remove before we start looking for tags
-  REMOVED_RE = /
-    # Comments
-    <!--.*?-->
-
-    # CDATA blocks
-  | <!\[CDATA\[.*?\]\]>
-
-    # script blocks
-  | <script\b
-
-    # make sure script is not an XML namespace
-    (?!:)
-
-    [^>]*>.*?<\/script>
-
-  /mix
-  
   class StandardFetcher
 
     def fetch(url, body=nil, headers=nil, redirect_limit=REDIRECT_LIMIT)
@@ -40,10 +22,10 @@ module OpenID
           end
 
           if body.nil?
-            conn.request_get(url.request_uri, headers)
+            conn.request_get(url.url, headers)
           else
             headers["Content-type"] ||= "application/x-www-form-urlencoded"
-            conn.request_post(url.request_uri, body, headers)
+            conn.request_post(url.url, body, headers)
           end
         }
         setup_encoding(response)

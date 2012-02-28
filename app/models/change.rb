@@ -46,33 +46,30 @@ class Change < ActiveRecord::Base
   validates_length_of :content, :maximum => 500, :allow_nil => true, :allow_blank => true  
   
   acts_as_list
-  acts_as_state_machine :initial => :suggested, :column => :status
-  
-  state :suggested
-  state :notsent, :enter => :do_notsend
-  state :sent, :enter => :do_send
-  state :approved, :enter => :do_approve
-  state :declined, :enter => :do_decline
-  state :deleted, :enter => :do_delete
-  
-  event :send do
-    transitions :from => [:suggested], :to => :sent
-  end
-  
-  event :dont_send do
-    transitions :from => [:suggested], :to => :notsent
-  end  
-  
-  event :approve do
-    transitions :from => [:sent, :suggested], :to => :approved
-  end
 
-  event :decline do
-    transitions :from => [:sent, :suggested], :to => :declined
-  end    
-  
-  event :delete do
-    transitions :from => [:suggested, :sent, :approved, :declined], :to => :deleted
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :suggested do
+      event :send, transitions_to: :sent
+      event :dont_send, transitions_to: :notsent
+      event :approve, transitions_to: :approved
+      event :decline, transitions_to: :declined
+      event :delete, transitions_to: :deleted
+    end
+    state :sent do
+      event :approve, transitions_to: :approved
+      event :decline, transitions_to: :declined
+      event :delete, transitions_to: :deleted
+    end
+    state :notsent
+    state :approved do
+      event :delete, transitions_to: :deleted
+    end
+    state :declined do
+      event :delete, transitions_to: :deleted
+    end
+    state :delete
   end
 
   after_create :add_to_priority
@@ -183,7 +180,7 @@ class Change < ActiveRecord::Base
     past_voters.collect{|c| c.user_id}
   end
   
-  def do_send
+  def on_sent_entry(new_state, event)
     ballots = 0
     if is_endorsers?
       for u in priority.up_endorsers
@@ -215,7 +212,7 @@ class Change < ActiveRecord::Base
   end
   
   # this method is based on not including folks who have voted on this acquisition in the past
-  #def do_send
+  #def on_sent_entry(new_state, event)
   #  if is_up?
   #    eusers = priority.up_endorsers
   #  elsif is_down?
@@ -235,7 +232,7 @@ class Change < ActiveRecord::Base
   #  self.sent_at = Time.now
   #end
   
-  def do_notsend
+  def on_notsent_entry(new_state, event)
     priority.update_attribute(:change_id,nil)    
     # refund their political capital
     if self.has_cost?
@@ -244,7 +241,7 @@ class Change < ActiveRecord::Base
     remove_notifications    
   end  
   
-  def do_approve
+  def on_approved_entry(new_state, event)
     self.approved_at = Time.now
     for vote in self.votes.pending
       vote.implicit_approve!
@@ -271,7 +268,7 @@ class Change < ActiveRecord::Base
     remove_notifications    
   end
   
-  def do_decline
+  def on_declined_entry(new_state, event)
     self.declined_at = Time.now
     priority.update_attribute(:change_id,nil)    
     for vote in self.votes.pending
@@ -281,7 +278,7 @@ class Change < ActiveRecord::Base
     remove_notifications    
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     priority.update_attribute(:change_id,nil)    
     # refund their political capital
     if has_cost?

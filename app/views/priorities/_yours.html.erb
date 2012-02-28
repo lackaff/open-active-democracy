@@ -42,10 +42,30 @@
 			</div>	
 		<% end %>
 
-		<%= sortable_element :your_priorities, :tag => 'div',
-		  	:url => { :controller => :users, :action => :order }
-		 	%>
-		
+      <script type="text/javascript">
+          $(function() {
+              $('#your_priorities').sortable(
+                      {
+                          axis: 'y',
+                          items: 'div.your_priority_endorsement',
+                          scroll: true,
+                          update: function(){
+                              order = [];
+                              $("#your_priorities").children("div").each(function(idx, elem) {
+                                  order.push(elem.id.split('_')[1])
+                              });
+                              $.ajax({
+                                  type: 'post',
+                                  dataType: 'script',
+                                  data: {"your_priorities": order},
+                                  url: '<%= url_for :controller => :users, :action => :order %>'
+                              })
+                          }
+                      }
+              )
+          });
+      </script>
+
 	</div>
 
 	<% if current_user.endorsements_count < 5 %>

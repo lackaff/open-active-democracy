@@ -1,0 +1,85 @@
+div.scrollable_videos_top
+  position: relative
+  overflow: hidden
+  width: 240px
+  height: 600px
+  padding-left: 10px
+  float: left
+
+#top_videos_thumbs h3
+  color: #999
+  font-size: 10px
+  font-weight: bold
+
+#top_videos_thumbs
+  position: absolute
+  height: 20000em
+  width: 240px
+  clear: both
+  border: 1px solid #222
+
+a.prev,a.next
+  margin-top: 118px
+
+#top_videos_thumbs div
+  float: left
+  width: 240px
+  height: 200px
+  background: #333 url(/assets/h150.png) repeat-x 0 110px
+  color: #fff
+  border-left: 1px solid #333
+  cursor: pointer
+  font-size: 10px
+
+#top_videos_thumbs img
+  padding-left: 40px
+  padding-top: 5px
+
+#top_videos_thumbs p
+  font-size: 10px
+
+#top_videos_thumbs div.hover
+  background-color: #444
+
+#top_videos_thumbs div.active
+  background-color: #066
+  cursor: default
+
+a.prev,a.next,a.prevPage,a.nextPage
+  display: block
+  width: 18px
+  height: 18px
+  background: url(/assets/scroller/left.png) no-repeat
+  float: left
+  margin: 93px 10px
+  cursor: pointer
+
+a.prev:hover,a.next:hover,a.prevPage:hover,a.nextPage:hover
+  background-position: 0 -18px
+
+a.disabled
+  visibility: hidden!important
+
+a.next,a.nextPage
+  background-image: url(/assets/scroller/right.png)
+  clear: right
+
+div.navi
+  margin-left: 172px
+  width: 200px
+  height: 20px
+
+div.navi a
+  width: 8px
+  height: 8px
+  float: left
+  margin: 3px
+  background: url(/assets/scroller/navigator.png) 0 0 no-repeat
+  cursor: pointer
+
+div.navi a:hover
+  background-position: 0 -8px
+
+div.navi a.active
+  background-position: 0 -16px
+

@@ -2,17 +2,17 @@
   <% if Government.current.layout == "better_reykjavik" %>
     <% if current_partner %>
         <div class="reykjavik_icon">
-            <a href="http://betrireykjavik.is"><%= image_tag("new/betrireykjavik_fra_bh.png", :alt => "betrireykjavik.is") %></a>
+            <a href="http://betrireykjavik.is"><%= image_tag("/assets/new/betrireykjavik_fra_bh.png", :alt => "betrireykjavik.is") %></a>
         </div>
     <% else %>
 	    <div class="reykjavik_icon">
-		    <a href="http://www.reykjavik.is"><%= image_tag("new/reykjavik_icon.png", :alt => "www.reykjavik.is") %></a>
+		    <a href="http://www.reykjavik.is"><%= image_tag("/assets/new/reykjavik_icon.png", :alt => "www.reykjavik.is") %></a>
 	    </div>
     <% end %>
 
   <% else %>
     <div class="yrpri_icon">
-		<a href="http://yrpri.org"><%= image_tag("new/yourprioritiesworldwide.png", :alt => "Your Priorities Worldwide") %></a>
+		<a href="http://yrpri.org"><%= image_tag("/assets/new/yourprioritiesworldwide.png", :alt => "Your Priorities Worldwide") %></a>
 	</div>
   <% end %>
 	<%= render :partial => "shared/partner_large_flag" %>
@@ -112,7 +112,7 @@
   <%= render :partial => "shared/fb_activity_feed" %>
 
 <div class="yourpri_logo">		
-		<a href="http://ibuar.is"><%= image_tag("new/ibuar-logo.png", :alt => "shortcut") %></a>  
+		<a href="http://ibuar.is"><%= image_tag("/assets/new/ibuar-logo.png", :alt => "shortcut") %></a>
 	</div>
 
 </div>

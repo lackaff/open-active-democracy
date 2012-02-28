@@ -1,2 +1,2 @@
-<img src="/images/icons/chart_organisation.png" height="16" width="16" border="0" class="icon">
+<img src="/assets/icons/chart_organisation.png" height="16" width="16" border="0" class="icon">
 <%= raw tr("{user_name} recruited {other_user_name} to {government_name}", "view/activities/_activityuserrecruited", :user_name => link_to(activity.user.login, activity.user), :other_user_name => link_to(activity.other_user.login, activity.other_user), :government_name => tr(current_government.name,"Name from database")) %>

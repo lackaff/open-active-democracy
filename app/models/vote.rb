@@ -12,53 +12,44 @@ class Vote < ActiveRecord::Base
   
   before_create :make_code
   after_create :add_notification
-  
-  acts_as_state_machine :initial => :active, :column => :status
-  
-  state :active
-  state :approved, :enter => :do_approve
-  state :implicit_approved, :enter => :do_implicit_approve
-  state :declined, :enter => :do_decline
-  state :implicit_declined
-  state :inactive  
-  state :deleted
-  
-  event :approve do
-    transitions :from => [:active], :to => :approved
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :active do
+      event :approve, transitions_to: :approved
+      event :decline, transitions_to: :declined
+      event :implicit_approve, transitions_to: :implicit_approved
+      event :implicit_decline, transitions_to: :implicit_declined
+      event :deactivate, transitions_to: :inactive
+      event :delete, transitions_to: :deleted
+    end
+    state :approved do
+      event :delete, transitions_to: :deleted
+    end
+    state :implicit_approved
+    state :declined do
+      event :delete, transitions_to: :deleted
+    end
+    state :implicit_declined
+    state :inactive do
+      event :delete, transitions_to: :deleted
+    end
+    state :deleted
   end
 
-  event :decline do
-    transitions :from => [:active], :to => :declined
-  end    
-  
-  event :implicit_approve do
-    transitions :from => [:active], :to => :implicit_approved
-  end
-
-  event :implicit_decline do
-    transitions :from => [:active], :to => :implicit_declined
-  end  
-  
-  event :deactivate do
-    transitions :from => [:sent], :to => :inactive
-  end
-  
-  event :delete do
-    transitions :from => [:active, :inactive, :approved, :declined], :to => :deleted
-  end  
-  
-  def do_approve
+  def on_approved_entry(new_state, event)
     self.voted_at = Time.now
     change.decrement!("no_votes") if self.status == 'declined'
     change.increment!("yes_votes")
     old_endorsement = replace
   end
   
-  def do_implicit_approve
+  def on_implicit_approved_entry(new_state, event)
     old_endorsement = replace(true)
   end  
   
-  def do_decline
+  def on_declined_entry(new_state, event)
     self.voted_at = Time.now
     change.decrement!("yes_votes") if self.status == 'approved'
     change.increment!("no_votes")

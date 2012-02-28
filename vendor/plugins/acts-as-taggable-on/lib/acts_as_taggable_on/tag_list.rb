@@ -73,21 +73,21 @@ class TagList < Array
     #   tag_list = TagList.from("One , Two,  Three")
     #   tag_list # ["One", "Two", "Three"]
     def from(string)
-      returning new do |tag_list|
-        string = string.to_s.dup
-        
-        # Parse the quoted tags
-        string.gsub!(/"(.*?)"\s*#{delimiter}?\s*/) { tag_list << $1; "" }
-        string.gsub!(/'(.*?)'\s*#{delimiter}?\s*/) { tag_list << $1; "" }
-        
-        tag_list.add(string.split(delimiter))
-      end
+      tag_list = new
+      string = string.to_s.dup
+
+      # Parse the quoted tags
+      string.gsub!(/"(.*?)"\s*#{delimiter}?\s*/) { tag_list << $1; "" }
+      string.gsub!(/'(.*?)'\s*#{delimiter}?\s*/) { tag_list << $1; "" }
+
+      tag_list.add(string.split(delimiter))
+      return tag_list
     end
     
     def from_owner(owner, *tags)
-      returning from(*tags) do |taglist|
-        taglist.owner = owner
-      end
+      taglist = from(*tags)
+      taglist.owner = owner
+      return taglist
     end
   end
 end

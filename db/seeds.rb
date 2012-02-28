@@ -8,63 +8,22 @@
 
 # Create Categories
 
-Category.create(:name=>"Framkvæmdir")
-Category.create(:name=>"Skipulagsmál")
-Category.create(:name=>"Samgöngur")
-Category.create(:name=>"Velferðarmál")
-Category.create(:name=>"Ferðamál")
-Category.create(:name=>"Umhverfismál")
-Category.create(:name=>"Menntamál")
-Category.create(:name=>"Frístundir og útivist")
-Category.create(:name=>"Íþróttir")
-Category.create(:name=>"Menning og listir")
-Category.create(:name=>"Mannréttindi")
-Category.create(:name=>"Stjórnsýsla")
-Category.create(:name=>"Alls konar")
-
-if true
-  Category.create(:name=>"Welfare")
-  Category.create(:name=>"Law")
-  Category.create(:name=>"Arts")
-  Category.create(:name=>"Sports")
-  Category.create(:name=>"Environment")
-  Category.create(:name=>"Police")
-  Category.create(:name=>"Public services")
-  Category.create(:name=>"Military")
-  Category.create(:name=>"Economy")
-  Category.create(:name=>"Constitution")
-  Category.create(:name=>"Banks")
-  Category.create(:name=>"Entertainment")
-  Category.create(:name=>"Immigration")
-  Category.create(:name=>"Other")
-else
-  unless partner = Partner.find_by_short_name("dev")
-    partner = Partner.create(:name=>"development", :short_name=>"dev")
-  end
-  Category.create(:name=>"User interface", :partner_id=>partner.id)
-  Category.create(:name=>"General", :partner_id=>partner.id)
-  Category.create(:name=>"Localization", :partner_id=>partner.id)
-  Category.create(:name=>"Data sources", :partner_id=>partner.id)
-end
-
-p=Partner.new
-p.name = "The European Union and EEA"
-p.short_name = "eu"
-p.geoblocking_enabled = true
-p.geoblocking_open_countries = Tr8n::IsoCountry::EU_AND_EEA_COUNTRIES.join(",")
-p.save
-
-p=Partner.new
-p.name = "Development"
-p.short_name = "dev"
-p.save
-
-p=Partner.new
-p.name = "The World"
-p.short_name = "world"
-p.save
-
 # Create Portlet Templates
+Category.create(:name=>"Welfare", :description => "")
+Category.create(:name=>"Law", :description => "")
+Category.create(:name=>"Arts", :description => "")
+Category.create(:name=>"Sports", :description => "")
+Category.create(:name=>"Environment", :description => "")
+Category.create(:name=>"Police", :description => "")
+Category.create(:name=>"Public services", :description => "")
+Category.create(:name=>"Military", :description => "")
+Category.create(:name=>"Economy", :description => "")
+Category.create(:name=>"Constitution", :description => "")
+Category.create(:name=>"Banks", :description => "")
+Category.create(:name=>"Entertainment", :description => "")
+Category.create(:name=>"Immigration", :description => "")
+Category.create(:name=>"Other", :description => "")
+
 pc=PortletTemplateCategory.new
 pc.name="Priorities"
 pc.weight = 1
@@ -279,12 +238,3 @@ p.partial_name = "process_latest_documents"
 p.item_limit = 5
 p.weight = 4
 p.save
-
-p=PortletTemplate.new
-p.name="Icesave"
-p.portlet_template_category_id=pc5.id
-p.locals_data_function="setup_priorities_process_icesave"
-p.partial_name = "priority_list"
-p.item_limit = 3
-p.weight = 5
-p.save    

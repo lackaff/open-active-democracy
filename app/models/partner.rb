@@ -19,38 +19,33 @@ class Partner < ActiveRecord::Base
   has_many :activities
   has_many :priorities
   
-  belongs_to :iso_country, :class_name => 'Tr8n::IsoCountry'
+  has_one :iso_country, :class_name => 'Tr8n::IsoCountry'
 
-  # docs: http://www.vaporbase.com/postings/stateful_authentication
-  acts_as_state_machine :initial => :passive, :column => :status
-  
-  state :passive
-  state :pending
-  state :active, :enter => :do_activate
-  state :suspended
-  state :deleted, :enter => :do_delete
-  
-  event :register do
-    transitions :from => :passive, :to => :pending
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :passive do
+      event :registered, transitions_to: :pending
+      event :suspend, transitions_to: :suspended
+      event :delete, transitions_to: :deleted
+    end
+    state :pending do
+      event :activate, transitions_to: :active
+      event :suspend, transitions_to: :suspended
+      event :delete, transitions_to: :deleted
+    end
+    state :active do
+      event :suspend, transitions_to: :suspended
+      event :delete, transitions_to: :deleted
+    end
+    state :suspended do
+      event :delete, transitions_to: :deleted
+      event :unsuspend, transitions_to: :active, meta: { validates_presence_of: [:activated_at] }
+      event :unsuspend, transitions_to: :pending, meta: { validates_presence_of: [:activation_code] }
+      event :unsuspend, transitions_to: :passive
+    end
+    state :deleted
   end
-
-  event :activate do
-    transitions :from => :pending, :to => :active 
-  end
-  
-  event :suspend do
-    transitions :from => [:passive, :pending, :active], :to => :suspended
-  end
-  
-  event :delete do
-    transitions :from => [:passive, :pending, :active, :suspended], :to => :deleted
-  end
-
-  event :unsuspend do
-    transitions :from => :suspended, :to => :active, :guard => Proc.new {|u| !u.activated_at.blank? }
-    transitions :from => :suspended, :to => :pending, :guard => Proc.new {|u| !u.activation_code.blank? }
-    transitions :from => :suspended, :to => :passive
-  end  
 
   before_save :clean_urls
   
@@ -121,7 +116,7 @@ class Partner < ActiveRecord::Base
     "#{id}-#{short_name.parameterize_full}"
   end
 
-  def do_activate
+  def on_activated_entry(new_state, event)
     ActivityPartnerNew.create(:user => owner, :partner => self)
   end
   
@@ -166,7 +161,7 @@ class Partner < ActiveRecord::Base
   end
   
   private
-  def do_delete
+  def on_deleted_entry(new_state, event)
     deleted_at = Time.now
   end  
 end

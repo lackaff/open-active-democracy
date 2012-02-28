@@ -55,7 +55,7 @@
         <% for element in @proposal.find_changes_grouped_by_user %>
         <li id="diff-changes-document-user-<%= element.user.id %>">
           <a href="#" onclick="return toggle_change_user(<%= element.user.id %>);">
-            <%= image_tag("/images/document_32.png") %>
+            <%= image_tag("/assets/document_32.png") %>
             <div class="author"><%= element.user.real_name %></div>
           </a>
         </li>

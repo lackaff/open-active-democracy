@@ -123,43 +123,43 @@ class Priority < ActiveRecord::Base
                                                :too_short => tr("please enter more than 5 characters", "model/point")
   validates_uniqueness_of :name, :if => Proc.new { |priority| priority.status == 'published' }
   validates :category_id, :presence => true
-  
-  # docs: http://www.practicalecommerce.com/blogs/post/122-Rails-Acts-As-State-Machine-Plugin
-  acts_as_state_machine :initial => :published, :column => :status
-  
-  state :passive
-  state :draft
-  state :published, :enter => :do_publish
-  state :deleted, :enter => :do_delete
-  state :buried, :enter => :do_bury
-  state :inactive
-  state :abusive, :enter => :do_abusive
-  
-  event :publish do
-    transitions :from => [:draft, :passive], :to => :published
-  end
-  
-  event :delete do
-    transitions :from => [:inactive, :passive, :draft, :published], :to => :deleted
+
+  after_create :on_published_entry
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :published do
+      event :delete, transitions_to: :deleted
+      event :bury, transitions_to: :buried
+      event :deactivate, transitions_to: :inactive
+      event :abusive, transitions_to: :abusive
+    end
+    state :passive do
+      event :publish, transitions_to: :published
+      event :delete, transitions_to: :deleted
+      event :bury, transitions_to: :buried
+    end
+    state :draft do
+      event :publish, transitions_to: :published
+      event :delete, transitions_to: :deleted
+      event :bury, transitions_to: :buried
+      event :deactivate, transitions_to: :inactive
+    end
+    state :deleted do
+      event :bury, transitions_to: :buried
+      event :undelete, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :undelete, transitions_to: :draft
+    end
+    state :buried do
+      event :deactivate, transitions_to: :inactive
+    end
+    state :inactive do
+      event :delete, transitions_to: :deleted
+    end
+    state :abusive
   end
 
-  event :undelete do
-    transitions :from => :deleted, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :delete, :to => :draft 
-  end
-  
-  event :bury do
-    transitions :from => [:draft, :passive, :published, :deleted], :to => :buried
-  end
-  
-  event :deactivate do
-    transitions :from => [:draft, :published, :buried], :to => :inactive
-  end
-
-  event :abusive do
-    transitions :from => :published, :to => :abusive
-  end
-    
   cattr_reader :per_page
   @@per_page = 25
   
@@ -702,7 +702,7 @@ class Priority < ActiveRecord::Base
     latest_priority_process_txt.html_safe if latest_priority_process_txt
   end
 
-  def do_abusive
+  def on_abusive_entry(new_state, event)
     self.user.do_abusive!(notifications)
     self.update_attribute(:flags_count, 0)
   end
@@ -715,12 +715,12 @@ class Priority < ActiveRecord::Base
   end  
 
   private
-  def do_publish
+  def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
     ActivityPriorityNew.create(:user => user, :priority => self)    
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     activities.each do |a|
       a.delete!
     end
@@ -730,11 +730,11 @@ class Priority < ActiveRecord::Base
     self.deleted_at = Time.now
   end
   
-  def do_undelete
+  def on_delete_entry(new_state, event)
     self.deleted_at = nil
   end  
   
-  def do_bury
+  def on_buried_entry(new_state, event)
     # should probably send an email notification to the person who submitted it
     # but not doing anything for now.
   end

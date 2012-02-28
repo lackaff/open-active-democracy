@@ -1,7 +1,7 @@
 <% if activity.capital.amount > 0 %>
-<img src="/images/icons/coins.png" height="16" width="16" border="0" class="icon">
-<%= raw tr("Earned {capital}{currency_short_name} because endorsers found {point_name} helpful", "view/activities/_activitycapitaldocumenthelpfulendorsers_nouser", :user_name => link_to(activity.user.login, activity.user), :capital => activity.capital.amount.abs, :currency_short_name => current_government.currency_short_name, :point_name => link_to((activity.document.name), activity.document))%>
+<img src="/assets/icons/coins.png" height="16" width="16" border="0" class="icon">
+<%= raw tr("Earned {capital}{currency_short_name} because endorsers found {point_name} helpful", "view/activities/_activitycapitaldocumenthelpfulendorsers_nouser", :capital => activity.capital.amount.abs, :currency_short_name => current_government.currency_short_name, :point_name => link_to((activity.document.name), activity.document))%>
 <% else %>
-<img src="/images/icons/coins_delete.png" height="16" width="16" border="0" class="icon">
-<%= raw tr("Lost {capital}{currency_short_name} because endorsers found {point_name} unhelpful", "view/activities/_activitycapitaldocumenthelpfulendorsers_nouser", :user_name => link_to(activity.user.login, activity.user), :capital => activity.capital.amount.abs, :currency_short_name => current_government.currency_short_name, :point_name => link_to((activity.document.name), activity.document))%>
+<img src="/assets/icons/coins_delete.png" height="16" width="16" border="0" class="icon">
+<%= raw tr("Lost {capital}{currency_short_name} because endorsers found {point_name} unhelpful", "view/activities/_activitycapitaldocumenthelpfulendorsers_nouser", :capital => activity.capital.amount.abs, :currency_short_name => current_government.currency_short_name, :point_name => link_to((activity.document.name), activity.document))%>
 <% end %>

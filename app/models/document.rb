@@ -65,44 +65,37 @@ class Document < ActiveRecord::Base
   before_save :update_word_count
   
   validates_length_of :name, :within => 3..60
-  validates_uniqueness_of :name  
-  
-  # docs: http://www.practicalecommerce.com/blogs/post/122-Rails-Acts-As-State-Machine-Plugin
-  acts_as_state_machine :initial => :published, :column => :status
-  
-  state :draft
-  state :published, :enter => :do_publish
-  state :deleted, :enter => :do_delete
-  state :buried, :enter => :do_bury
-  state :abusive, :enter => :do_abusive
+  validates_uniqueness_of :name
 
-  event :publish do
-    transitions :from => [:draft], :to => :published
-  end
-  
-  event :delete do
-    transitions :from => [:draft, :published,:buried], :to => :deleted
-  end
+  after_create :on_published_entry
 
-  event :undelete do
-    transitions :from => :deleted, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :deleted, :to => :draft 
-  end
-  
-  event :bury do
-    transitions :from => [:draft, :published, :deleted], :to => :buried
-  end
-  
-  event :unbury do
-    transitions :from => :buried, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :buried, :to => :draft     
-  end  
-
-  event :abusive do
-    transitions :from => :published, :to => :abusive
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :published do
+      event :delete, transitions_to: :deleted
+      event :bury, transitions_to: :buried
+      event :abusive, transitions_to: :abusive
+    end
+    state :draft do
+      event :publish, transitions_to: :published
+      event :delete, transitions_to: :deleted
+      event :bury, transitions_to: :buried
+    end
+    state :deleted do
+      event :bury, transitions_to: :buried
+      event :undelete, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :undelete, transitions_to: :draft
+    end
+    state :buried do
+      event :delete, transitions_to: :deleted
+      event :unbury, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :unbury, transitions_to: :draft
+    end
+    state :abusive
   end
 
-  def do_abusive
+  def on_abusive_entry(new_state, event)
     self.user.do_abusive!(notifications)
     self.update_attribute(:flags_count, 0)
   end
@@ -118,13 +111,13 @@ class Document < ActiveRecord::Base
     self.word_count = self.content.split(' ').length
   end
 
-  def do_publish
+  def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
     add_counts
     priority.save(:validate => false) if priority
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     remove_counts
     activities.each do |a|
       a.delete!
@@ -140,7 +133,7 @@ class Document < ActiveRecord::Base
     end
   end
   
-  def do_bury
+  def on_buried_entry(new_state, event)
     remove_counts
     priority.save(:validate => false) if priority
   end

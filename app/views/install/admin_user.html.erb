@@ -78,18 +78,6 @@
 					<%= f.text_field :login, :maxlength => 40, :size => 30 %>
 				</div>
 				</div>
-
-        <div class="field">
-        <div class="field_label">
-          <%= tr("Verify your humanity", "view/install/admin_user")%>
-        </div>
-        <div class="field_box">
-          <%= show_simple_captcha(:object=>"user", :image_style => "random", :distortion=>"medium", :code_type=>'numeric', :label=>tr("(enter code from the image)")) %>
-        </div>
-        </div>
-
-
-
 				<%= submit_tag tr("Save your account", "view/install/admin_user"), :class => "yellow_button" %>
 
 				<% end -%>

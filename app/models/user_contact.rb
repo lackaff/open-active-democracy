@@ -24,30 +24,28 @@ class UserContact < ActiveRecord::Base
   belongs_to :other_user, :class_name => "User"
   belongs_to :following
 
-  # docs: http://www.vaporbase.com/postings/stateful_authentication
-  acts_as_state_machine :initial => :unsent, :column => :status
-  
-  state :unsent
-  state :tosend, :enter => :do_invite
-  state :sent, :enter => :do_send
-  state :accepted, :enter => :do_accept
-  state :deleted, :enter => :do_delete
-  
-  event :invite do
-    transitions :from => :unsent, :to => :tosend
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :unsent do
+      event :invite, transitions_to: :tosend
+      event :accept, transitions_to: :accepted
+      event :delete, transitions_to: :deleted
+    end
+    state :tosend do
+      event :send, transitions_to: :sent
+      event :accept, transitions_to: :accepted
+      event :delete, transitions_to: :deleted
+    end
+    state :sent do
+      event :accept, transitions_to: :accepted
+      event :delete, transitions_to: :deleted
+    end
+    state :accepted do
+      event :delete, transitions_to: :deleted
+    end
+    state :deleted
   end
-  
-  event :send do
-    transitions :from => :tosend, :to => :sent
-  end
-  
-  event :accept do
-    transitions :from => [:sent, :unsent, :tosend], :to => :accepted
-  end  
-  
-  event :delete do
-    transitions :from => [:sent, :unsent, :tosend, :accepted], :to => :deleted
-  end  
   
   validates_presence_of     :email, :unless => :has_facebook?
   validates_length_of       :email, :minimum => 3, :unless => :has_facebook?
@@ -163,7 +161,7 @@ class UserContact < ActiveRecord::Base
     attribute_present?("accepted_at")
   end  
   
-  def do_invite
+  def on_tosend_entry(new_state, event)
     # disabling invitation activity
     #ActivityInvitationNew.create(:user => user)
     user.contacts_invited_count += 1
@@ -172,7 +170,7 @@ class UserContact < ActiveRecord::Base
     self.delay.send!
   end
   
-  def do_send
+  def on_sent_entry(new_state, event)
     return if attribute_present?("sent_at") # only send it once
     Tr8n::Config.init('is', Tr8n::Config.current_user) if Government.last.layout == "better_reykjavik" or Government.last.layout == "better_iceland"
     send_email
@@ -187,7 +185,7 @@ class UserContact < ActiveRecord::Base
     self.sent_at = Time.now    
   end
   
-  def do_accept
+  def on_accepted_entry(new_state, event)
     # can deliver an email notifying the person who invited them
     self.accepted_at = Time.now
     if has_email?
@@ -206,7 +204,7 @@ class UserContact < ActiveRecord::Base
     self.other_user.notifications << NotificationInvitationAccepted.new(:sender => self.other_user, :recipient => user)
   end  
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     remove_counts
   end
   

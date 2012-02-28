@@ -8,22 +8,19 @@ class Invitation < ActiveRecord::Base
   belongs_to :recipient, :class_name => "User", :foreign_key => "to_id"
 
   has_many :activities
-  
-  # docs: http://www.vaporbase.com/postings/stateful_authentication
-  acts_as_state_machine :initial => :unsent, :column => :status
-  
-  state :unsent
-  state :sent, :enter => :do_send
-  state :accepted, :enter => :do_accept
-  
-  event :send do
-    transitions :from => :unsent, :to => :sent
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :unsent do
+      event :send, transitions_to: :sent
+      event :accept, transitions_to: :accepted
+    end
+    state :sent do
+      event :accept, transitions_to: :accepted
+    end
+    state :accepted
   end
-  
-  event :accept do
-    transitions :from => [:sent, :unsent], :to => :accepted
-  end  
-  
+
   validates_presence_of     :to_email, :unless => :has_facebook?
   validates_presence_of     :from_name
   #validates_presence_of    :to_name

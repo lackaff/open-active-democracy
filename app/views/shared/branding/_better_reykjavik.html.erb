@@ -8,8 +8,8 @@
             </div>
         <% else %>
             <div id="main_logo">
-              <%= link_to :controller=>"portal", :host=>request.host_with_port do %>
-                  <%= image_tag "/images/new/new_logo.png"%>
+              <%= link_to :controller=>"portal", :host=>request.host do %>
+                  <%= image_tag "/assets/new/new_logo.png"%>
               <% end %>
             </div>
         <% end %>

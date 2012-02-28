@@ -1,4 +1,4 @@
-<img src="/images/fugue/sticky_note_pin.png" height="16" width="16" border="0" class="icon"/>
+<img src="/assets/fugue/sticky_note_pin.png" height="16" width="16" border="0" class="icon"/>
 <% if activity.has_point? %>
 	<%= raw tr("{user_name} posted a bulletin to {discussion_name}", "view/activities/_activitybulletinnew", :user_name => link_to(activity.user.login, activity.user), :discussion_name => link_to(activity.point.name, activity.point))%>
 <% elsif activity.has_document? %>

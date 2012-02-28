@@ -4,13 +4,6 @@ class PasswordsController < ApplicationController
   before_filter :login_required, :except => [:create, :new]
   before_filter :current_user_required, :only => [:edit, :update]
 
-  # Don't write passwords as plain text to the log files
-  filter_parameter_logging :old_password, :password, :password_confirmation
-
-  # GETs should be safe
-  verify :method => :post, :only => [:create], :redirect_to => { :controller => :users }
-  verify :method => :put, :only => [:update], :redirect_to => { :controller => :users }
-
   # POST /passwords
   # Forgot password
   

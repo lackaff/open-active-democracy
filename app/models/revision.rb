@@ -12,39 +12,34 @@ class Revision < ActiveRecord::Base
       
   # this is actually just supposed to be 500, but bumping it to 520 because the javascript counter doesn't include carriage returns in the count, whereas this does.
   validates_length_of :content, :maximum => 520, :allow_blank => true, :allow_nil => true, :too_long => tr("has a maximum of 500 characters", "model/revision")
-  
-  # docs: http://www.practicalecommerce.com/blogs/post/122-Rails-Acts-As-State-Machine-Plugin
-  acts_as_state_machine :initial => :draft, :column => :status
-  
-  state :draft
-  state :archived, :enter => :do_archive
-  state :published, :enter => :do_publish
-  state :deleted, :enter => :do_delete
-  
-  event :publish do
-    transitions :from => [:draft, :archived], :to => :published
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :draft do
+      event :publish, transitions_to: :published
+    end
+    state :archived do
+      event :publish, transitions_to: :published
+      event :delete, transitions_to: :deleted
+    end
+    state :published do
+      event :archive, transitions_to: :archived
+      event :delete, transitions_to: :deleted
+    end
+    state :deleted do
+      event :undelete, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :undelete, transitions_to: :archived
+    end
   end
 
-  event :archive do
-    transitions :from => :published, :to => :archived
-  end
-  
-  event :delete do
-    transitions :from => [:published, :archived], :to => :deleted
-  end
-
-  event :undelete do
-    transitions :from => :deleted, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :deleted, :to => :archived 
-  end
-  
   before_save :truncate_user_agent
   
   def truncate_user_agent
     self.user_agent = self.user_agent[0..149] if self.user_agent # some user agents are longer than 150 chars!
   end
   
-  def do_publish
+  def on_published_entry(new_state, event)
     self.published_at = Time.now
     self.auto_html_prepare
     begin
@@ -105,11 +100,11 @@ class Revision < ActiveRecord::Base
     user.increment!(:point_revisions_count)    
   end
   
-  def do_archive
+  def on_archived_entry
     self.published_at = nil
   end
   
-  def do_delete
+  def on_deleted_entry
     point.decrement!(:revisions_count)
     user.decrement!(:point_revisions_count)    
   end

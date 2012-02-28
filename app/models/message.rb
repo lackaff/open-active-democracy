@@ -16,33 +16,30 @@ class Message < ActiveRecord::Base
   has_many :notifications, :as => :notifiable, :dependent => :destroy  
   
   validates_presence_of :content
-    
-  acts_as_state_machine :initial => :draft, :column => :status
-  
-  state :draft
-  state :sent, :enter => :do_send
-  state :read, :enter => :do_read  
-  state :deleted, :enter => :do_delete
-  
-  event :send do
-    transitions :from => [:draft], :to => :sent
-  end
-  
-  event :read do
-    transitions :from => [:sent, :draft], :to => :read
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :draft do
+      event :send, transitions_to: :sent
+      event :read, transitions_to: :read
+      event :delete, transitions_to: :deleted
+    end
+    state :sent do
+      event :read, transitions_to: :read
+      event :delete, transitions_to: :deleted
+    end
+    state :read do
+      event :delete, transitions_to: :deleted
+    end
+    state :deleted do
+      event :undelete, transitions_to: :read, meta: { validates_presence_of: [:read_at] }
+      event :undelete, transitions_to: :sent, meta: { validates_presence_of: [:sent_at] }
+      event :undelete, transitions_to: :draft
+    end
   end
 
-  event :delete do
-    transitions :from => [:sent, :draft, :read], :to => :deleted
-  end
-
-  event :undelete do
-    transitions :from => :deleted, :to => :read, :guard => Proc.new {|p| !p.read_at.blank? }    
-    transitions :from => :deleted, :to => :sent, :guard => Proc.new {|p| !p.sent_at.blank? }
-    transitions :from => :deleted, :to => :draft 
-  end
-  
-  def do_send
+  def on_sent_entry(new_state, event)
     self.deleted_at = nil  
     if not Following.find_by_user_id_and_other_user_id_and_value(self.recipient_id,self.sender_id,-1) and self.sent_at.blank?
       self.notifications << NotificationMessage.new(:sender => self.sender, :recipient => self.recipient)
@@ -50,7 +47,7 @@ class Message < ActiveRecord::Base
     self.sent_at = Time.now
   end
   
-  def do_read
+  def on_read_entry(new_state, event)
     self.deleted_at = nil
     self.read_at = Time.now
     for n in self.notifications
@@ -59,7 +56,7 @@ class Message < ActiveRecord::Base
     end
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     self.deleted_at = Time.now
     for n in self.notifications
       n.delete!

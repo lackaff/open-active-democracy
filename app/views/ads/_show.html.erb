@@ -19,7 +19,7 @@
 						<%= link_to tr("endorse", "view/ads/_show"), endorse_priority_path(ad.priority, :referral_id => ad.user, :region => "ad_top", :value => 1, :ad_id => ad),
                         :method => :post,
 						            :remote=>true,
-                        'data-disable-with' => '<span class="encouragement_click priority_add_link priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                        'data-disable-with' => '<span class="encouragement_click priority_add_link priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                         'data-loader-name' => "no_loader",
 						            :class => "priority_add_link", :title => tr("I support this, add it to my priority list", "view/ads/_show") %>		
 					</span>
@@ -28,7 +28,7 @@
 						<%= link_to tr("oppose", "view/ads/_show"), endorse_priority_path(ad.priority, :referral_id => ad.user, :region => "ad_top", :value => -1, :ad_id => ad),
                         :method => :post,
                         :remote=>true,
-                        'data-disable-with' => '<span class="encouragement_click priority_add_link priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                        'data-disable-with' => '<span class="encouragement_click priority_add_link priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                         'data-loader-name' => "no_loader",
 						            :class => "priority_add_link", :title => tr("I oppose this, and want to add my opposition to my priority list.", "view/ads/_show") %>		
 					</span>
@@ -41,7 +41,7 @@
 				<%= link_to tr("Skip", "view/ads/_show"), skip_priority_ad_path(ad.priority,ad), 
                     :method => :post,
                     :remote=>true,
-                    'data-disable-with' => '<span class="tag_scale priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                    'data-disable-with' => '<span class="tag_scale priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                     'data-loader-name' => "no_loader"%>
 			</span>
 

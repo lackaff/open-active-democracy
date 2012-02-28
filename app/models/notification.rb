@@ -20,32 +20,29 @@ class Notification < ActiveRecord::Base
 
   cattr_reader :per_page
   @@per_page = 30
-  
-  acts_as_state_machine :initial => :unsent, :column => :status
-  
-  state :unsent, :enter => :queue_sending
-  state :sent, :enter => :do_send
-  state :read, :enter => :do_read  
-  state :deleted, :enter => :do_delete
-  
-  event :send do
-    transitions :from => :unsent, :to => :sent
-  end
-  
-  event :read do
-    transitions :from => [:sent, :unsent], :to => :read
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :unsent do
+      event :send, transitions_to: :sent
+      event :read, transitions_to: :read
+      event :delete, transitions_to: :deleted
+    end
+    state :sent do
+      event :read, transitions_to: :read
+      event :delete, transitions_to: :deleted
+    end
+    state :read do
+      event :delete, transitions_to: :deleted
+    end
+    state :deleted do
+      event :undelete, transitions_to: :read, meta: { validates_presence_of: [:read_at] }
+      event :undelete, transitions_to: :sent, meta: { validates_presence_of: [:sent_at] }
+      event :undelete, transitions_to: :unsent
+    end
   end
 
-  event :delete do
-    transitions :from => [:sent, :unsent, :read], :to => :deleted
-  end
-
-  event :undelete do
-    transitions :from => :deleted, :to => :read, :guard => Proc.new {|p| !p.read_at.blank? }    
-    transitions :from => :deleted, :to => :sent, :guard => Proc.new {|p| !p.sent_at.blank? }
-    transitions :from => :deleted, :to => :unsent 
-  end
-  
   after_create :add_counts
   
   def add_counts
@@ -58,13 +55,13 @@ class Notification < ActiveRecord::Base
     self.send!
   end
   
-  def do_read
+  def on_read_entry(new_state, event)
     self.deleted_at = nil
     self.read_at = Time.now
     recipient.decrement!(:unread_notifications_count)
   end
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     self.deleted_at = Time.now
     recipient.decrement!(:received_notifications_count)
     recipient.decrement!(:unread_notifications_count) if status != 'read'
@@ -90,7 +87,7 @@ class Notification < ActiveRecord::Base
     self.sender = User.find_by_login(n) unless n.blank?
   end  
   
-  def do_send
+  def on_sent_entry(new_state, event)
     Rails.logger.info("In send!")
     self.deleted_at = nil    
     self.processed_at = Time.now

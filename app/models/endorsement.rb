@@ -36,43 +36,37 @@ class Endorsement < ActiveRecord::Base
   
   # docs: http://noobonrails.blogspot.com/2007/02/actsaslist-makes-lists-drop-dead-easy.html
   acts_as_list :scope => 'endorsements.user_id = #{user_id} AND status = \'active\''
-  
-  # docs: http://www.vaporbase.com/postings/stateful_authentication
-  acts_as_state_machine :initial => :active, :column => :status
-  
-  state :active, :enter => :do_activate
-  state :inactive
-  state :finished, :enter => :do_finish
-  state :deleted # deprecated, in favor of just flat out deleting them.  too many problems with aasm
-  state :suspended, :enter => :do_suspension
-  state :replaced, :enter => :do_replace
-  
-  event :activate do
-    transitions :from => [:deleted, :suspended, :replaced], :to => :active
-  end
-  
-  event :deactivate do
-    transitions :from => [:active, :finished], :to => :inactive
-  end  
-  
-  event :finish do
-    transitions :from => [:active, :inactive], :to => :finished
-  end
-  
-  event :undelete do
-    transitions :from => [:deleted, :replaced], :to => :active
-  end
-  
-  event :unsuspend do
-    transitions :from => :suspended, :to => :active
-  end
-  
-  event :suspend do
-    transitions :from => :active, :to => :suspended
-  end
-  
-  event :replace do
-    transitions :from => [:deleted, :active], :to => :replaced
+
+  after_create :on_active_entry
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :active do
+      event :deactivate, transitions_to: :inactive
+      event :finish, transitions_to: :finished
+      event :suspend, transitions_to: :suspended
+      event :replace, transitions_to: :replaced
+    end
+    state :inactive do
+      event :finish, transitions_to: :finished
+    end
+    state :finished do
+      event :deactivate, transitions_to: :inactive
+    end
+    state :deleted do
+      event :activate, transitions_to: :active
+      event :undelete, transitions_to: :active
+      event :replace, transitions_to: :replaced
+    end
+    state :suspended do
+      event :activate, transitions_to: :active
+      event :unsuspend, transitions_to: :active
+    end
+    state :replaced do
+      event :activate, transitions_to: :active
+      event :undelete, transitions_to: :active
+    end
   end
 
   before_create :calculate_score
@@ -239,16 +233,16 @@ class Endorsement < ActiveRecord::Base
     end
   end
   
-  def do_finish
+  def on_finished_entry(new_state, event)
     remove_from_list
     #notifications << NotificationPriorityFinished.new(:recipient => self.user)
   end  
   
-  def do_replace
+  def on_replaced_entry(new_state, event)
     delete_update_counts
   end
   
-  def do_activate
+  def on_active_entry(new_state = nil, event = nil)
     if self.is_up?
       ActivityEndorsementNew.create(:user => user, :partner => partner, :priority => priority, :position => self.position) 
     else
@@ -258,7 +252,7 @@ class Endorsement < ActiveRecord::Base
     add_update_counts
   end
   
-  def do_suspension
+  def on_suspended_entry(new_state, event)
     delete_update_counts
   end  
   

@@ -7,24 +7,21 @@ class Webpage < ActiveRecord::Base
   belongs_to :feed
   
   acts_as_taggable_on :issues
-  
-  acts_as_state_machine :initial => :published, :column => :status
-  
-  state :draft
-  state :published
-  state :deleted
-  
-  event :publish do
-    transitions :from => :draft, :to => :published
-  end
-  
-  event :delete do
-    transitions :from => [:published, :draft], :to => :deleted
-  end
-  
-  event :undelete do
-    transitions :from => :deleted, :to => :published, :guard => Proc.new {|p| !p.published_at.blank? }
-    transitions :from => :delete, :to => :draft 
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :published do
+      event :delete, transitions_to: :deleted
+    end
+    state :draft do
+      event :publish, transitions_to: :published
+      event :delete, transitions_to: :deleted
+    end
+    state :deleted do
+      event :undelete, transitions_to: :published, meta: { validates_presence_of: [:published_at] }
+      event :undelete, transitions_to: :draft
+    end
   end
   
   validates_format_of :url, :with => /(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix

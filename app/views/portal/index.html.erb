@@ -1,24 +1,11 @@
-<%# Copyright (C) 2009,2010 Róbert Viðar Bjarnason %>
-<%# License: http://www.gnu.org/licenses/agpl-3.0.txt %>
-<link type="text/css" href="/stylesheets/fg.menu.css" rel="stylesheet" />
-<link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
-<link type="text/css" href="/stylesheets/portal.css" rel="stylesheet"/>
-<link type="text/css" href="/stylesheets/jquery-ui.css" rel="stylesheet"/>
-<style type="text/css"> 
-    
-    /* solo icon buttons must have block properties for the text-indent to
-     .fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
-     .ui-tabs-panel {height: 100%;}
-     
-     
-</style>
-<script type="text/javascript" src="/javascripts/fg.menu.js">
-</script>
+<%= stylesheet_link_tag "fg.menu" %>
+<%= stylesheet_link_tag "portal" %>
+<%= javascript_include_tag "fg.menu" %>
 <%= javascript_include_tag "portal" %>
 <% if current_user and current_user.is_admin? %>
 <script type="text/javascript">
     	    jQuery(function(){
-    			setup_portal_menu(<%=@portlet_container ? @portlet_container.id : -1%>,'<%=tr("Choose an option", "view/portal/index")%>','<%=tr("All", "view/portal/index")%>');
+                setup_portal_menu(<%=@portlet_container ? @portlet_container.id : -1%>,'<%=tr("Choose an option", "view/portal/index")%>','<%=tr("All", "view/portal/index")%>');
     			setup_portal_dialogues('<%=tr("Delete portlet", "view/portal/index")%>','<%=tr("Cancel", "view/portal/index")%>');
     			setup_columns();
     		});

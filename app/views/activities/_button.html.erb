@@ -14,7 +14,7 @@
 	<div class="yellow_button" id="activity_remove_<%= activity.id.to_s %>">
 		<%= link_to tr("Follow this discussion", "view/activities/_button"), activity_followings_path(activity, :region => "activity_show"), 
 		            :method => :post,
-                'data-disable-with' => '<span class="priority_remove_link priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                'data-disable-with' => '<span class="priority_remove_link priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                 'data-loader-name' => "no_loader",
 		            :class => "priority_remove_link", :title => tr("I want to follow this person's comments and activity", "view/activities/_button") %>
 	</div>

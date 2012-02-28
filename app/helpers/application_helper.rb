@@ -2,9 +2,9 @@
 
 module ApplicationHelper
 #  include WillPaginate::ViewHelpers 
-  include Tr8n::HelperMethods
+  #include Tr8n::HelperMethods
   include Tr8n::BaseHelper
-  include Wf::HelperMethods
+  #include Wf::HelperMethods
 
   def current_facebook_user_if_on_facebook
     ret_user = nil
@@ -50,8 +50,8 @@ module ApplicationHelper
   end
 
   def get_random_logo
-    logo_filename = Pathname.new(Dir.glob(Rails.root.join("public","images","logos").to_s+'/*').sort_by { rand }.first).basename
-    %Q{<img src="/images/logos/#{logo_filename}"/>}.html_safe    
+    logo_filename = Pathname.new(Dir.glob(Rails.root.join("app","assets","images","logos").to_s+'/*').sort_by { rand }.first).basename
+    %Q{<img src="/logos/#{logo_filename}"/>}.html_safe
   end
 
   def tg(text)

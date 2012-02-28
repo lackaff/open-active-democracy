@@ -1,4 +1,4 @@
-<img src="/images/icons/email.png" height="16" width="16" border="0" class="icon">
+<img src="/assets/icons/email.png" height="16" width="16" border="0" class="icon">
 <% if activity.user %>
 	<%= raw tr("Invited someone to join", "view/activities/_activityinvitationnew_nouser", :user_name => link_to(activity.user.login, activity.user), :government_name => tr(current_government.name,"Name from database"))%>
 <% else %>

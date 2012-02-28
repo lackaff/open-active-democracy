@@ -1,5 +1,6 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
 
   extend ActiveSupport::Memoizable
   require 'paperclip'
@@ -106,7 +107,7 @@ class User < ActiveRecord::Base
   
   has_many :following_discussions, :dependent => :destroy
   has_many :following_discussion_activities, :through => :following_discussions, :source => :activity
-    
+
   validates_presence_of     :login, :message => tr("Please specify a name to be identified as on the site.", "model/user")
   validates_length_of       :login, :within => 3..60
   validates_presence_of     :first_name, :message => tr("Please specify your first name.", "model/user")
@@ -176,7 +177,7 @@ class User < ActiveRecord::Base
   end
 
   def using_br?
-    Government.current.layout == "better_reykjavik"
+    Government.current && Government.current.layout == "better_reykjavik" ? true : false
   end
 
   def set_signup_country
@@ -273,57 +274,54 @@ class User < ActiveRecord::Base
       self.partner_ids = nil
     end
   end
-  
-  # docs: http://www.vaporbase.com/postings/stateful_authentication
-  acts_as_state_machine :initial => :pending, :column => :status
 
-  state :passive
-  state :pending, :enter => :do_pending
-  state :active, :enter => :do_activate
-  state :suspended, :enter => :do_suspension
-  state :probation, :enter => :do_probation
-  state :deleted, :enter => :do_delete  
+  after_create :on_pending_entry
 
-  event :register do
-    transitions :from => :passive, :to => :pending, :guard => Proc.new {|u| !(u.crypted_password.blank? && u.password.blank?) }
-  end
-
-  event :activate do
-    transitions :from => [:pending, :passive], :to => :active 
-  end
-  
-  event :suspend do
-    transitions :from => [:passive, :pending, :active, :probation], :to => :suspended
-  end
-  
-  event :delete do
-    transitions :from => [:passive, :pending, :active, :suspended, :probation], :to => :deleted
-  end
-
-  event :unsuspend do
-    transitions :from => :suspended, :to => :active, :guard => Proc.new {|u| !u.activated_at.blank? }
-    transitions :from => :suspended, :to => :pending, :guard => Proc.new {|u| !u.activation_code.blank? }
-    transitions :from => :suspended, :to => :passive
-  end
-  
-  event :probation do
-    transitions :from => [:passive, :pending, :active], :to => :probation    
-  end
-  
-  event :unprobation do
-    transitions :from => :probation, :to => :active, :guard => Proc.new {|u| !u.activated_at.blank? }
-    transitions :from => :probation, :to => :pending, :guard => Proc.new {|u| !u.activation_code.blank? }
-    transitions :from => :probation, :to => :passive    
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :pending do
+      event :activate, transitions_to: :active
+      event :suspend, transitions_to: :suspended
+      event :delete, transitions_to: :deleted
+      event :probation, transitions_to: :probation
+    end
+    state :passive do
+      event :register, transitions_to: :pending, meta: { validates_presence_of: [:crypted_password, :password] }
+      event :activate, transitions_to: :active
+      event :suspend, transitions_to: :suspended
+      event :delete, transitions_to: :deleted
+      event :probation, transitions_to: :probation
+    end
+    state :active do
+      event :suspend, transitions_to: :suspended
+      event :delete, transitions_to: :deleted
+      event :probation, transitions_to: :probation
+    end
+    state :suspended do
+      event :delete, transitions_to: :deleted
+      event :unsuspend, transitions_to: :active, meta: { validates_presence_of: [:activated_at] }
+      event :unsuspend, transitions_to: :pending, meta: { validates_presence_of: [:activation_code] }
+      event :unsuspend, transitions_to: :passive
+    end
+    state :probation do
+      event :suspend, transitions_to: :suspended
+      event :delete, transitions_to: :deleted
+      event :unprobation, transitions_to: :active, meta: { validates_presence_of: [:activated_at] }
+      event :unprobation, transitions_to: :pending, meta: { validates_presence_of: [:activation_code] }
+      event :unprobation, transitions_to: :passive
+    end
+    state :deleted
   end
 
-  def do_pending
+   def on_pending_entry(new_state = nil, event = nil)
     self.probation_at = nil
     self.suspended_at = nil
     self.deleted_at = nil    
   end
 
   # Activates the user in the database.
-  def do_activate
+  def on_active_entry(new_state, event)
     @activated = true
     self.activated_at ||= Time.now.utc
     self.activation_code = nil
@@ -336,7 +334,7 @@ class User < ActiveRecord::Base
     self.warnings_count = 0    
   end  
   
-  def do_delete
+  def on_deleted_entry(new_state, event)
     self.deleted_at = Time.now
     for e in endorsements
       e.destroy
@@ -359,12 +357,12 @@ class User < ActiveRecord::Base
     self.facebook_uid = nil
   end
   
-  def do_probation
+  def on_probation_entry(new_state, event)
     self.probation_at = Time.now
     ActivityUserProbation.create(:user => self)
   end
   
-  def do_suspension
+  def on_suspended_entry(new_state, event)
     self.suspended_at = Time.now
     for e in endorsements.active
       e.suspend!
@@ -435,7 +433,7 @@ class User < ActiveRecord::Base
   end
   
   def to_param_link
-    '<a href="http://' + Government.current.base_url_w_partner + '/users/' + sender.to_param + '">' + sender.name + '</a>'  
+    user_path(self)
   end
   
   def has_top_priority?
@@ -1096,7 +1094,7 @@ class User < ActiveRecord::Base
     return 'mysql'
   end
   
-  def do_abusive!(parent_notifications)
+  def on_abusive_entry(new_state, event, parent_notifications)
      if self.warnings_count == 0 # this is their first warning, get a warning message
       parent_notifications << NotificationWarning1.new(:recipient => self)
     elsif self.warnings_count == 1 # 2nd warning

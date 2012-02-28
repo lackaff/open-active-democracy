@@ -1,21 +1,18 @@
 class Blast < ActiveRecord::Base
   
   belongs_to :user
-  
-  acts_as_state_machine :initial => :pending, :column => :status
-  
-  state :pending
-  state :sent, :enter => :do_send
-  state :notsent
-  
-  event :send do
-    transitions :from => [:pending], :to => :sent
+
+  include Workflow
+  workflow_column :status
+  workflow do
+    state :pending do
+      event :send, transitions_to: :sent
+      event :dont_send, transitions_to: :notsent
+    end
+    state :sent
+    state :notsent
   end
-  
-  event :dont_send do
-    transitions :from => [:pending], :to => :notsent
-  end
-  
+
   before_create :make_code
   
   private
@@ -26,14 +23,14 @@ class Blast < ActiveRecord::Base
 end
 
 class BlastNewsletter < Blast
-  def do_send
+  def on_sent_entry(new_state, event)
     self.sent_at = Time.now    
     Blaster.deliver_newsletter(self,user)
   end
 end
 
 class BlastUserNewsletter < Blast
-  def do_send
+  def on_sent_entry(new_state, event)
     self.sent_at = Time.now
     Blaster.deliver_user_newsletter(self,user)
   end
@@ -43,7 +40,7 @@ class BlastAddPicture < Blast
   
   belongs_to :tag
   
-  def do_send
+  def on_sent_entry(new_state, event)
     self.sent_at = Time.now    
     Blaster.deliver_add_picture(user,tag)
   end
@@ -54,7 +51,7 @@ class BlastAlert < Blast
   
   belongs_to :tag
   
-  def do_send
+  def on_sent_entry(new_state, event)
     self.sent_at = Time.now    
     Blaster.deliver_alert(user,tag)
   end
@@ -62,7 +59,7 @@ class BlastAlert < Blast
 end
 
 class BlastBasic < Blast
-  def do_send
+  def on_sent_entry(new_state, event)
     self.sent_at = Time.now
     Blaster.deliver_basic_blast(self,user)
   end

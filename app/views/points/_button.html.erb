@@ -31,7 +31,7 @@
 		<%= link_to tr("Helpful?", "view/points/_button"), quality_point_path(point, :region => "point_detail", :value => true), 
                 :method => :post,
                 :remote=>true,
-                'data-disable-with' => '<span class="grey_button_wide priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                'data-disable-with' => '<span class="grey_button_wide priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                 'data-loader-name' => "no_loader",
 		            :class => "", :title => tr("This is helpful", "view/points/_button") %>
 	</div>
@@ -40,7 +40,7 @@
 		<%= link_to tr("Not Helpful?", "view/points/_button"), quality_point_path(point, :region => "point_detail", :value => false),
                 :method => :post,
                 :remote=>true,
-                'data-disable-with' => '<span class="grey_button_wide priority_add_working"><img src="/images/ajax/horizontal_small.gif" /></span>',
+                'data-disable-with' => '<span class="grey_button_wide priority_add_working"><img src="/assets/ajax/horizontal_small.gif" /></span>',
                 'data-loader-name' => "no_loader",
 		            :class => "", :title => tr("This is not helpful", "view/points/_button") %>
 	</div>	
