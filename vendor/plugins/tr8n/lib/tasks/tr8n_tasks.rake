@@ -134,10 +134,11 @@ namespace :tr8n do
     database = current_config['database']
     user = current_config['username']
     password = current_config['password']
+    host = current_config['host']
 
     tr8n_table = ActiveRecord::Base.connection.tables.find_all {|t| t.include?("tr8n_") }.join(" ")
     abort "TR8N import file does not exist" unless File.exists?(tr8n_db_filename)
-    command = "gunzip < #{tr8n_db_filename} | mysql -u #{user} --password=#{password} #{database}"
+    command = "gunzip < #{tr8n_db_filename} | mysql -u #{user} -h #{host} --password=#{password} #{database}"
     puts "Excuting: #{command}"
     system command
   end
@@ -155,7 +156,7 @@ namespace :tr8n do
 
   desc "Initializes all of the tables with default data"
   task :init => :environment do
-    raise "This action is prohibited in this environment" if ['production', 'stage', 'staging'].include?(Rails.env) and env('force') != 'true'
+    #raise "This action is prohibited in this environment" if ['production', 'stage', 'staging'].include?(Rails.env) #and env('force') != 'true'
     Tr8n::Config.reset_all!
   end
 
