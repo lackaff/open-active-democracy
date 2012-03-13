@@ -1,9 +1,7 @@
 <% if ['color_schemes'].include?(params[:controller]) %>
 	<%= javascript_include_tag "colorpicker.js" %>
 <% end %>
-<%= javascript_include_tag "application", "facebox","jquery.autocomplete.pack.js","jquery.NobleCount.min.js", "jquery.timeago.js",
-                           "jquery.truncator.js","autoresize.jquery.min.js","jquery.defaultvalue.js","jquery.hoverIntent.minified.js",
-                           "jquery.bgiframe.min.js","jquery.corner.js","jquery.delayedObserver.js", "jquery.endless-scroll.js" %>
+<%= javascript_include_tag "application" %>
 <% if ["portal","news"].include?(controller_name) %>
   <%= javascript_include_tag "endless_scrolling_activity.js" %>
 <% elsif ["priorities"].include?(controller_name) and action_name.include?("show") %>

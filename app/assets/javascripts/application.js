@@ -1,6 +1,18 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
+//= require facebox
+//= require jquery.autocomplete.pack
+//= require jquery.NobleCount.min
+//= require jquery.timeago
+//= require jquery.truncator
+//= require autoresize.jquery.min
+//= require jquery.defaultvalue
+//= require jquery.hoverIntent.minified
+//= require jquery.bgiframe.min
+//= require jquery.corner
+//= require jquery.delayedObserver
+//= require jquery.endless-scroll
 //= require_self
 
 jQuery(function ($) {
