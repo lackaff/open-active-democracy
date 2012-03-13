@@ -135,11 +135,11 @@ task :before_update_code, :roles => [:app] do
 end
 
 task :after_update_code do
+  run "ln -s   #{deploy_to}/#{shared_dir}/config/database.yml #{current_release}/config/database.yml"
   run "ln -nfs #{deploy_to}/#{shared_dir}/db/sphinx #{current_release}/db/sphinx"
   run "ln -nfs #{deploy_to}/#{shared_dir}/config/yrprirsakey.pem #{current_release}/config/yrprirsakey.pem"
   run "ln -nfs #{deploy_to}/#{shared_dir}/config/yrprirsacert.pem #{current_release}/config/yrprirsacert.pem"
   run "ln -s   #{deploy_to}/#{shared_dir}/config/contacts.yml #{current_release}/config/contacts.yml"
-  run "ln -s   #{deploy_to}/#{shared_dir}/config/database.yml #{current_release}/config/database.yml"
   run "ln -s   #{deploy_to}/#{shared_dir}/config/facebooker.yml #{current_release}/config/facebooker.yml"
   run "ln -s   #{deploy_to}/#{shared_dir}/config/newrelic.yml #{current_release}/config/newrelic.yml"
   run "ln -nfs #{deploy_to}/#{shared_dir}/config/twitter_auth.yml #{current_release}/config/twitter_auth.yml"
@@ -147,6 +147,19 @@ task :after_update_code do
   thinking_sphinx.configure
   thinking_sphinx.start
 end
+
+
+namespace :assets do
+  task :precompile, :roles => :web do
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake assets:precompile"
+  end
+
+  task :cleanup, :roles => :web do
+    run "cd #{current_path} && RAILS_ENV=production bundle exec rake assets:clean"
+  end
+end
+
+after :deploy, "assets:precompile"
 
 namespace :deploy do
   desc "Restart Application"
