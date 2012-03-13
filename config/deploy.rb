@@ -135,6 +135,7 @@ namespace :deploy do
     run "ln -s   #{deploy_to}/#{shared_dir}/config/facebooker.yml #{current_release}/config/facebooker.yml"
     run "ln -s   #{deploy_to}/#{shared_dir}/config/newrelic.yml #{current_release}/config/newrelic.yml"
     run "ln -nfs #{deploy_to}/#{shared_dir}/config/twitter_auth.yml #{current_release}/config/twitter_auth.yml"
+    run "ln -nfs #{deploy_to}/#{shared_dir}/assets #{current_release}/public/assets"
     run "ln -nfs /mnt/shared/system #{current_release}/public/system"
   end
 end
