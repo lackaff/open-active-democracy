@@ -56,5 +56,8 @@ group :assets do
   gem 'coffee-rails', '~> 3.1.0'
   gem 'uglifier'
   gem 'jquery-ui-rails'
+  gem 'execjs'
+  gem 'therubyracer', :platforms => :ruby
+#  gem 'johnson'
 end
 gem 'sass-rails', '~> 3.1.0'
