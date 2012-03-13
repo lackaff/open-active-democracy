@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'psych'
-gem 'rails', '3.1.3'
+gem 'rails', '3.1.4'
 gem 'mysql2'
 gem "recaptcha", :require => "recaptcha/rails"
 gem 'capistrano'
