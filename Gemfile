@@ -25,7 +25,7 @@ gem "twitter-auth", :git => "git://github.com/benders/twitter-auth.git", :branch
 gem 'hpricot', '>= 0.6'
 gem 'will_paginate'
 gem 'mogli'
-gem 'facebooker2', :git => "git://github.com/vala/facebooker2.git"
+gem 'facebooker2'
 gem 'dalli'
 gem 'sys-filesystem'
 gem 'thinking-sphinx',
