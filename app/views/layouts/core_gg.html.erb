@@ -6,7 +6,6 @@
 		<%= render :partial => "shared/head" %>
 		<%= render :partial => "shared/javascripts" %>
 		<%= render :partial => "shared/priority_processes_head" if controller_name.index("process") %>
-		<%= stylesheet_link_tag :all, :cache => true %>
 		<%= javascript_include_tag "skuggathing.js" unless controller_name=="priority_processes" %>
 		<% if ["users","sessions"].include?(controller_name)  %>
 		<%= javascript_include_tag "jquery.keypad.min.js" %>

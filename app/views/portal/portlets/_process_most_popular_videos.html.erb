@@ -1,6 +1,6 @@
 <% cache(["portlets_process_most_popular_videos",locale,Partner.current_id,@inline_translations_enabled], :expires_in => 45.seconds) do -%>
 <%= javascript_include_tag 'jquery.cluetip.js' %>
-<%= stylesheet_link_tag 'jquery.cluetip' %>
+<%= stylesheet_link_tag 'jquery.cluetip.css' %>
 <% @top_videos = ProcessSpeechVideo.top(9) %>
 <% if @top_videos.length > 0 %>
 		<table>

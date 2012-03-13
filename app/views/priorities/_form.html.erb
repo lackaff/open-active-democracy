@@ -1,5 +1,5 @@
 <%= javascript_include_tag "jquery.qtip.min.js" %>
-<%= stylesheet_link_tag "jquery.qtip.min" %>
+<%= stylesheet_link_tag "jquery.qtip.min.css" %>
 
 <% if current_partner and current_partner.message_for_new_priority %>
     <%= render :partial=>"/shared/top_message_box", :locals=> {:message_text => current_partner.message_for_new_priority.html_safe} %>
