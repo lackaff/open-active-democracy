@@ -23,7 +23,7 @@
   <tr>
     <td align="center">
         <%partner=Partner.find_by_iso_country_id(@iso_country.id)%>
-        <% link_to partner.show_url do %>
+        <%= link_to partner.show_url do %>
           <%=image_tag @iso_country.large_flag_image, :border=>0 %><br>
           <h2><%=tr("Top priorities for","welcome")%> <%=tr(@iso_country.country_english_name,"welcome")%></h2>
         <% end %>
@@ -40,7 +40,7 @@
     <td align="center">
       <br><br>
       <%partner=Partner.find_by_short_name("world")%>
-      <% link_to partner.show_url do %>
+      <%= link_to partner.show_url do %>
         <%=image_tag "tr8n/flags/64/_united-nations.png", :border=>0 %><br>
         <h2><%=tr("The Worlds Top Priorities","welcome")%></h2>
       <% end %>
@@ -58,7 +58,7 @@
       <td align="center">
         <br><br>
         <%partner=Partner.find_by_short_name("eu")%>
-        <% link_to partner.show_url do %>
+        <%= link_to partner.show_url do %>
           <%=image_tag "tr8n/flags/64/_european-union.png", :border=>0 %><br>
           <h2><%=tr("European Union and EEA Top Priorities","welcome")%></h2>
         <% end %>
