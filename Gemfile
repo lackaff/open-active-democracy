@@ -24,8 +24,8 @@ gem 'oauth', '>= 0.3.1'
 gem "twitter-auth", :git => "git://github.com/benders/twitter-auth.git", :branch => "rails_3", :require => "twitter_auth/engine"
 gem 'hpricot', '>= 0.6'
 gem 'will_paginate'
-gem 'mogli'
-gem 'facebooker2'
+gem 'mogli', '>= 0.0.33'
+gem 'facebooker2', '>= 0.0.16'
 gem 'dalli'
 gem 'sys-filesystem'
 gem 'thinking-sphinx',
