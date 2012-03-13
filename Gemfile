@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'psych', '1.2.2'
+gem 'psych'
 gem 'rails', '3.1.3'
 gem 'mysql2'
 gem "recaptcha", :require => "recaptcha/rails"
@@ -38,7 +38,7 @@ gem 'kaminari'
 gem 'will_filter'
 gem 'tr8n', :git => "git://github.com/hinrik/tr8n.git"
 gem 'workflow'
-gem "airbrake", :git => "git://github.com/airbrake/airbrake.git"
+gem "airbrake"
 gem 'jquery-rjs', :git => "git://github.com/aaronchi/jquery-rjs.git"
 gem 'pry-rails'
 gem 'awesome_print'
