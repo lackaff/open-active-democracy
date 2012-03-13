@@ -153,8 +153,12 @@ end
 after "deploy", "delayed_job:restart"
 
 namespace :assets do
-  task :precompile, :roles => :web do
-    run "cd #{current_path} && RAILS_ENV=production bundle exec rake assets:precompile"
+  task :precompile, :roles => :web, :except => { :no_release => true } do
+    if capture("cd #{latest_release} && #{source.local.log(source.next_revision(current_revision))} vendor/assets/ lib/assets/ app/assets/ | wc -l").to_i > 0
+      run "cd #{latest_release} && #{rake} RAILS_ENV=#{rails_env} #{asset_env} assets:precompile"
+    else
+      logger.info "No changes on assets. Skipping pre-compilation."
+    end
   end
 
   task :cleanup, :roles => :web do
