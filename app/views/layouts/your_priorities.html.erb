@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="is" lang="is" xmlns:fb="http://www.facebook.com/2008/fbml">
   <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><%= @page_title || tr(current_government.name,"Name from database") %></title>
-    <%= javascript_include_tag :defaults %>
     <%= render :partial => "shared/description" %>
     <%= render :partial => "shared/head" %>
     <%= render :partial => "shared/javascripts" %>
@@ -11,10 +10,10 @@
     <% if controller_name == "users" %>
       <%= stylesheet_link_tag "fb_invite_hack" %>
     <% end %>
-    <%= javascript_include_tag "skuggathing" unless controller_name=="priority_processes" %>
+    <%= javascript_include_tag "skuggathing.js" unless controller_name=="priority_processes" %>
     <% if ["users","sessions"].include?(controller_name)  %>
       <%= stylesheet_link_tag "jquery.keypad" %>
-      <%= javascript_include_tag "jquery.keypad.min" %>
+      <%= javascript_include_tag "jquery.keypad.min.js" %>
     <% end %>
     <% if controller_name == "priorities" and action_name == "show" %>
       <%= render :partial=>"priorities/fb_og_tags" %>

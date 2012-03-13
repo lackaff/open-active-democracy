@@ -1,7 +1,7 @@
 <% if @google_translate_enabled_for_locale and session[:enable_google_translate] %> 
   <script src="https://www.google.com/jsapi?key=AIzaSyCZPiaKns75_v5l-OKvFsmoL38CjwqReGs"></script>
-  <%= javascript_include_tag "jquery.translate" %>
-  <%= javascript_include_tag "google_translate" %>
+  <%= javascript_include_tag "jquery.translate.js" %>
+  <%= javascript_include_tag "google_translate.js" %>
   <script type="text/javascript">
       google.load("language", "1");
       $(document).ready(function(){

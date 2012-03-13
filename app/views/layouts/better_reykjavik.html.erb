@@ -10,11 +10,11 @@ end %>
     <%= render :partial => "shared/javascripts" %>
     <%= render :partial => "shared/css" %>
     <%= render :partial => "shared/priority_processes_head" if controller_name.index("process") %>
-    <%= javascript_include_tag "check-browser", "skuggathing" unless controller_name=="priority_processes" %>
+    <%= javascript_include_tag "check-browser.js", "skuggathing" unless controller_name=="priority_processes" %>
 
     <% if ["users","sessions"].include?(controller_name)  %>
       <%= stylesheet_link_tag "jquery.keypad" %>
-      <%= javascript_include_tag "jquery.keypad.min", "check-browser" %>
+      <%= javascript_include_tag "jquery.keypad.min.js", "check-browser.js" %>
     <% end %>
     <%= tr8n_scripts_tag %>
     <%= render :partial => "shared/description" %>

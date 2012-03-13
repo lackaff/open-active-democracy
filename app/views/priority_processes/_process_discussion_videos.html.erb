@@ -1,7 +1,7 @@
 <% @all_speech_videos = discussion.process_speech_videos.get_all_published %>
 <% if @all_speech_videos.length > 0 %>
-	<%= javascript_include_tag 'jquery.mousewheel' %>
-	<%= javascript_include_tag 'jquery.scrollable-1.0.1.min' %>
+	<%= javascript_include_tag 'jquery.mousewheel.js' %>
+	<%= javascript_include_tag 'jquery.scrollable-1.0.1.min.js' %>
 	<% if @total_discussions>8 %>
 		<%= stylesheet_link_tag 'vertical_video_speeches_scroller_tiny' %>
 	<% else %>

@@ -1,5 +1,5 @@
         <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-        <%= javascript_include_tag "slider" %>
+        <%= javascript_include_tag "slider.js" %>
         <%= javascript_include_tag "/javascripts/ckeditor/ckeditor.js" %>
         <% if controller_name == "process_speech_videos" and action_name == "show" %>
           <%= render :partial => "process_speech_videos/share_metadata", :locals => {:process_speech_video=> @process_speech_video } %>

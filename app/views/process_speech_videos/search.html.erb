@@ -4,7 +4,7 @@
 	<%= render :partial => "/priorities/nav" %>
 <% end %>
 
-<%= javascript_include_tag 'jquery.cluetip' %>
+<%= javascript_include_tag 'jquery.cluetip.js' %>
 <%= stylesheet_link_tag 'jquery.cluetip' %>
 
 <h1><%=tr("Search results for", "view/process_speech_videos/search")%>: <%=params[:search_query] %> <%= params[:priority_id] ? "- #{Priority.find(params[:priority_id]).name}" : ""%></h1>

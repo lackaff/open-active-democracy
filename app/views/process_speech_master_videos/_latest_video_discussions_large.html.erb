@@ -1,8 +1,8 @@
 <% cache(["latest_video_discussion_large",session[:locale]], :expires_in => 15.minutes) do %>
 <% @latest_speech_discussions = ProcessSpeechMasterVideo.get_latest_twenty %>
 <% if @latest_speech_discussions.length > 0 %>
-<%= javascript_include_tag 'jquery.mousewheel' %>
-<%= javascript_include_tag 'jquery.scrollable-1.0.1.min' %>
+<%= javascript_include_tag 'jquery.mousewheel.js' %>
+<%= javascript_include_tag 'jquery.scrollable-1.0.1.min.js' %>
 <%= stylesheet_link_tag 'vertical_video_speeches_scroller_large' %>
 <h1><%=tr("Newly processed speeches", "view/process_speech_master_videos/_latest_video_discussions_large") %></h1>
 <!-- navigator -->
