@@ -186,4 +186,4 @@ end
 
 
         require './config/boot'
-        require 'airbrake/capistrano'
+#        require 'airbrake/capistrano'
