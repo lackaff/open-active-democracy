@@ -1,6 +1,7 @@
 class String
 
 	def last
+    return "" unless length > 0
 	  self[self.length-1].chr
 	end
 
