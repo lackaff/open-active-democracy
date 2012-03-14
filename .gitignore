@@ -24,6 +24,7 @@ solr/*.pid
 .tmp*
 tmp/
 *.sql
+public/assets/
 public/production/*
 public/development/*
 public/system
