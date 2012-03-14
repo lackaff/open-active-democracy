@@ -61,4 +61,3 @@ group :assets do
 #  gem 'johnson'
 end
 gem 'sass-rails', '~> 3.1.0'
-gem 'rinku', require: 'rails_rinku'

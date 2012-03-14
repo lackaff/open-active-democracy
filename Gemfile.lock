@@ -290,7 +290,6 @@ DEPENDENCIES
   rails-dev-boost
   rails_view_annotator
   recaptcha
-  rinku
   rmagick (= 2.12.2)
   ruby-openid
   sass-rails (~> 3.1.0)
