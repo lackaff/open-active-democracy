@@ -37,18 +37,13 @@ $ source ~/.bash_profile
 Find out what dependencies are needed for Ruby (MRI) and install them:
 
 ````bash
-rvm requirements
+$ rvm requirements
 ````
 
-Install Ruby 1.9.3
+Install and use Ruby 1.9.3
 
 ````bash
-rvm install 1.9.3
-````
-
-Use Ruby 1.9.3
-
-````bash
+$ rvm install 1.9.3
 $ rvm use 1.9.3 --default
 ````
 
@@ -63,7 +58,7 @@ Set up open-active-democracy
 
 ````bash
 $ git clone https://github.com/rbjarnason/open-active-democracy.git
-cd open-active-democracy
+$ cd open-active-democracy
 ````
 
 Install all the dependencies
@@ -92,6 +87,7 @@ Run open-active-democracy
 -------------------------
 
 Finally, start the rails server:
+
 ````bash
 $ rails server
 ````
