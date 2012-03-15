@@ -159,20 +159,21 @@ class ApplicationController < ActionController::Base
           if params[:partner_short_name].empty?
             session.delete(:set_partner_id)
             Partner.current = @current_partner = nil
+            return @current_partner
           else
             @current_partner = Partner.find_by_short_name(params[:partner_short_name])
             Partner.current = @current_partner
             session[:set_partner_id] = @current_partner.id
+            return @current_partner
           end
         elsif session[:set_partner_id]
           @current_partner = Partner.find(session[:set_partner_id])
           Partner.current = @current_partner
+          return @current_partner
         end
-      rescue
-        return nil
-        end
-      return @current_partner
-    elsif request.host.include?("betraisland")
+      end
+    end
+    if request.host.include?("betraisland")
       if request.subdomains.size == 0 or request.host.include?(current_government.domain_name) or request.subdomains.first == 'www'
         if (controller_name=="home" and action_name=="index") or
            Rails.env.development? or
@@ -216,7 +217,6 @@ class ApplicationController < ActionController::Base
        if request.subdomains.size == 0 or request.host == current_government.base_url or request.subdomains.first == 'www'
         if (controller_name=="home" and action_name=="index") or
            Rails.env.development? or
-           request.host.include?("betrireykjavik") or
            self.class.name.downcase.include?("tr8n") or
            ["endorse","oppose","authorise_google","windows","yahoo"].include?(action_name)
           @current_partner = nil

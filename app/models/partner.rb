@@ -140,7 +140,11 @@ class Partner < ActiveRecord::Base
   end
   
   def show_url
-    'http://' + self.short_name + '.' + Government.current.base_url + '/'
+    if Rails.env.development?
+      "/?partner_short_name=#{short_name}"
+    else
+      'http://' + self.short_name + '.' + Government.current.base_url + '/'
+    end
   end
   
   def custom_tag_dropdown_options(option)

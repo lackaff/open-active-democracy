@@ -264,10 +264,6 @@ module ApplicationHelper
   end
 
   def partner_link(short_name)
-    if Rails.env.development?
-      return "http://" + request.host_with_port + "/?partner_short_name=#{short_name}"
-    else
-      return "http://" + short_name + "." + Government.current.domain_name
-    end
+    Partner.find_by_short_name(short_name).show_url
   end
 end
