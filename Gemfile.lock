@@ -66,6 +66,9 @@ GEM
       activesupport (= 3.1.4)
     activesupport (3.1.4)
       multi_json (~> 1.0)
+    airbrake (3.0.9)
+      activesupport
+      builder
     arel (2.2.3)
     auto_html (1.5.1)
       redcarpet (~> 2.0.0)
@@ -257,6 +260,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  airbrake
   auto_html
   awesome_print
   capistrano
