@@ -372,7 +372,7 @@
   native_name: "English"
   google_key: "en"
   facebook_key: ""
-  enabled:  false
+  enabled:  true
 "en-AU":
   english_name: "English (Australian)"
   native_name: "English (Australian)"
@@ -426,7 +426,7 @@
   native_name: "English (Pirate)"
   google_key: "xx-pirate"
   facebook_key: "en-PI"
-  enabled:  true
+  enabled:  false
 "en-SC":
   english_name: "English (Scottish)"
   native_name: "English (Scottish)"
@@ -444,7 +444,7 @@
   native_name: "English (US)"
   google_key: "en"
   facebook_key: "en-US"
-  enabled:  true
+  enabled:  false
   featured_index: 1000
 "en-ZW":
   english_name: "English (Zimbabwe)"
@@ -463,7 +463,7 @@
   native_name: "Eesti"
   google_key: "et"
   facebook_key: ""
-  enabled:  true
+  enabled:  false
   featured_index: 300
 "fo":
   english_name: "Faroese"
