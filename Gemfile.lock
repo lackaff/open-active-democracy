@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/airbrake/airbrake.git
-  revision: aebc0dff55611f9f9d05f016696ee1cdeff379ae
+  revision: dcb86b6bbcbfd37809c6ce7ad635258d729c0c8c
   specs:
     airbrake (3.0.9)
       activesupport
