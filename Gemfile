@@ -62,3 +62,7 @@ group :assets do
 end
 gem 'sass-rails', '~> 3.1.0'
 gem 'rinku', require: 'rails_rinku'
+
+group :test do
+  gem 'ruby-prof'
+end
