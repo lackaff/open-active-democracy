@@ -64,5 +64,9 @@ gem 'sass-rails', '~> 3.1.0'
 gem 'rinku', require: 'rails_rinku'
 
 group :test do
+  gem 'watir-webdriver'
   gem 'ruby-prof'
+  gem 'headless'
+  gem 'turn', '~> 0.8.3', :require => false
+  gem 'factory_girl_rails'
 end
