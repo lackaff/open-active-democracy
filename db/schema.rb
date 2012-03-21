@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120312153235) do
+ActiveRecord::Schema.define(:version => 20120321185510) do
 
   create_table "activities", :force => true do |t|
     t.integer  "user_id"
@@ -1606,7 +1606,7 @@ ActiveRecord::Schema.define(:version => 20120312153235) do
     t.string   "remember_token",               :limit => 60
     t.datetime "remember_token_expires_at"
     t.integer  "picture_id"
-    t.string   "status",                       :limit => 30,  :default => "passive"
+    t.string   "status",                       :limit => 30,  :default => "pending"
     t.integer  "partner_id"
     t.datetime "deleted_at"
     t.string   "ip_address",                   :limit => 16
