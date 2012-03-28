@@ -243,6 +243,7 @@ class Change < ActiveRecord::Base
   
   def on_approved_entry(new_state, event)
     self.approved_at = Time.now
+    save(:validate => false)
     for vote in self.votes.pending
       vote.implicit_approve!
     end
@@ -270,6 +271,7 @@ class Change < ActiveRecord::Base
   
   def on_declined_entry(new_state, event)
     self.declined_at = Time.now
+    save(:validate => false)
     priority.update_attribute(:change_id,nil)    
     for vote in self.votes.pending
       vote.implicit_decline!

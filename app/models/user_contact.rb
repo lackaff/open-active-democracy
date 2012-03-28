@@ -202,6 +202,7 @@ class UserContact < ActiveRecord::Base
     self.following = user.follow(self.other_user)
     user.decrement!(:contacts_invited_count)    
     self.other_user.notifications << NotificationInvitationAccepted.new(:sender => self.other_user, :recipient => user)
+    save(:validate => false)
   end  
   
   def on_deleted_entry(new_state, event)

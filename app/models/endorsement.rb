@@ -86,6 +86,7 @@ class Endorsement < ActiveRecord::Base
     end
     move_to_bottom
     add_update_counts
+    save(:validate => false) if persisted?
   end
 
   def on_suspended_entry(new_state, event)

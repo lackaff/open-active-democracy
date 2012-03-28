@@ -114,6 +114,7 @@ class Document < ActiveRecord::Base
   def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
     add_counts
+    save(:validate => false) if persisted?
     priority.save(:validate => false) if priority
   end
   

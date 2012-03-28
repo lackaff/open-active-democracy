@@ -24,7 +24,8 @@ end
 
 class BlastNewsletter < Blast
   def on_sent_entry(new_state, event)
-    self.sent_at = Time.now    
+    self.sent_at = Time.now
+    save(:validate => false)
     Blaster.deliver_newsletter(self,user)
   end
 end
@@ -32,6 +33,7 @@ end
 class BlastUserNewsletter < Blast
   def on_sent_entry(new_state, event)
     self.sent_at = Time.now
+    save(:validate => false)
     Blaster.deliver_user_newsletter(self,user)
   end
 end
@@ -41,7 +43,8 @@ class BlastAddPicture < Blast
   belongs_to :tag
   
   def on_sent_entry(new_state, event)
-    self.sent_at = Time.now    
+    self.sent_at = Time.now
+    save(:validate => false)
     Blaster.deliver_add_picture(user,tag)
   end
   
@@ -52,7 +55,8 @@ class BlastAlert < Blast
   belongs_to :tag
   
   def on_sent_entry(new_state, event)
-    self.sent_at = Time.now    
+    self.sent_at = Time.now
+    save(:validate => false)
     Blaster.deliver_alert(user,tag)
   end
   
@@ -61,6 +65,7 @@ end
 class BlastBasic < Blast
   def on_sent_entry(new_state, event)
     self.sent_at = Time.now
+    save(:validate => false)
     Blaster.deliver_basic_blast(self,user)
   end
 end

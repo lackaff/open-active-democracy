@@ -40,6 +40,7 @@ class Vote < ActiveRecord::Base
 
   def on_approved_entry(new_state, event)
     self.voted_at = Time.now
+    save(:validate => false)
     change.decrement!("no_votes") if self.status == 'declined'
     change.increment!("yes_votes")
     old_endorsement = replace
@@ -51,6 +52,7 @@ class Vote < ActiveRecord::Base
   
   def on_declined_entry(new_state, event)
     self.voted_at = Time.now
+    save(:validate => false)
     change.decrement!("yes_votes") if self.status == 'approved'
     change.increment!("no_votes")
     ActivityPriorityAcquisitionProposalNo.create(:user => user, :change => change, :vote => self, :priority => change.priority)

@@ -58,11 +58,13 @@ class Notification < ActiveRecord::Base
   def on_read_entry(new_state, event)
     self.deleted_at = nil
     self.read_at = Time.now
+    save(:validate => false)
     recipient.decrement!(:unread_notifications_count)
   end
   
   def on_deleted_entry(new_state, event)
     self.deleted_at = Time.now
+    save(:validate => false)
     recipient.decrement!(:received_notifications_count)
     recipient.decrement!(:unread_notifications_count) if status != 'read'
   end
@@ -104,7 +106,8 @@ class Notification < ActiveRecord::Base
     #if recipient.has_facebook?
     #  self.sent_at = Time.now
     #  Facebooker::Session.create.send_notification([recipient.facebook_uid],fbml)
-    #end    
+    #end
+    save(:validate => false)
   end  
 
   # you can override this in subclasses to specify a different rule for whether the person is subscribed

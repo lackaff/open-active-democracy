@@ -60,6 +60,7 @@ class Ad < ActiveRecord::Base
   
   def on_finished_entry(new_state, event)
     self.finished_at = Time.now
+    save(:validate => false)
     row = 0
     for a in Ad.active.most_paid.find(:all, :conditions => ["id <> ?",self.id])
       row += 1
