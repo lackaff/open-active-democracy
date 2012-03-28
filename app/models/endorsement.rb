@@ -69,6 +69,29 @@ class Endorsement < ActiveRecord::Base
     end
   end
 
+  def on_finished_entry(new_state, event)
+    remove_from_list
+    #notifications << NotificationPriorityFinished.new(:recipient => self.user)
+  end
+
+  def on_replaced_entry(new_state, event)
+    delete_update_counts
+  end
+
+  def on_active_entry(new_state = nil, event = nil)
+    if self.is_up?
+      ActivityEndorsementNew.create(:user => user, :partner => partner, :priority => priority, :position => self.position)
+    else
+      ActivityOppositionNew.create(:user => user, :partner => partner, :priority => priority, :position => self.position)
+    end
+    move_to_bottom
+    add_update_counts
+  end
+
+  def on_suspended_entry(new_state, event)
+    delete_update_counts
+  end
+
   before_create :calculate_score
   after_save :check_for_top_priority
   after_save :check_official
@@ -232,29 +255,6 @@ class Endorsement < ActiveRecord::Base
       end
     end
   end
-  
-  def on_finished_entry(new_state, event)
-    remove_from_list
-    #notifications << NotificationPriorityFinished.new(:recipient => self.user)
-  end  
-  
-  def on_replaced_entry(new_state, event)
-    delete_update_counts
-  end
-  
-  def on_active_entry(new_state = nil, event = nil)
-    if self.is_up?
-      ActivityEndorsementNew.create(:user => user, :partner => partner, :priority => priority, :position => self.position) 
-    else
-      ActivityOppositionNew.create(:user => user, :partner => partner, :priority => priority, :position => self.position)    
-    end
-    move_to_bottom
-    add_update_counts
-  end
-  
-  def on_suspended_entry(new_state, event)
-    delete_update_counts
-  end  
   
   def delete_update_counts
 #    if self.is_up?

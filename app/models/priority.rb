@@ -714,7 +714,6 @@ class Priority < ActiveRecord::Base
     end
   end  
 
-  private
   def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
     ActivityPriorityNew.create(:user => user, :priority => self)    
