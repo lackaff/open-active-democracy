@@ -53,13 +53,14 @@ group :production do
 end
 
 group :assets do
-  gem 'coffee-rails', '~> 3.1.0'
   gem 'uglifier'
   gem 'jquery-ui-rails'
   gem 'execjs'
   gem 'therubyracer', :platforms => :ruby
 #  gem 'johnson'
 end
+gem 'coffee-rails', '~> 3.1.0'
+gem 'coffee-filter'
 gem 'sass-rails', '~> 3.1.0'
 gem 'rinku', require: 'rails_rinku'
 
