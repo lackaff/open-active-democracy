@@ -17,3 +17,10 @@ en:
   rule2: 
     operator: contains
     value:    at_least_two_elements
+en-US:
+  rule1: 
+    operator: contains
+    value:    one_element
+  rule2: 
+    operator: contains
+    value:    at_least_two_elements

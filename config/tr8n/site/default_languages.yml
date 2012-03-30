@@ -371,8 +371,9 @@
   english_name: "English"
   native_name: "English"
   google_key: "en"
-  facebook_key: ""
+  facebook_key: "en"
   enabled:  true
+  featured_index: 1100
 "en-AU":
   english_name: "English (Australian)"
   native_name: "English (Australian)"
@@ -444,7 +445,7 @@
   native_name: "English (US)"
   google_key: "en"
   facebook_key: "en-US"
-  enabled:  false
+  enabled:  true
   featured_index: 1000
 "en-ZW":
   english_name: "English (Zimbabwe)"

@@ -10,8 +10,16 @@
 #   value2:       male, female, unknown, all_male, all_female, mixed
 # 
 #############################################################################
-
 en:
+  rule1: 
+    multipart:    false
+    part1:        contains
+    value1:       one_element
+  rule2: 
+    multipart:    false
+    part1:        contains
+    value1:       at_least_two_elements
+en-US:
   rule1: 
     multipart:    false
     part1:        contains
