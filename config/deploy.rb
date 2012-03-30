@@ -181,10 +181,6 @@ task :after_update_code do
   #run "ln -nfs #{deploy_to}/#{shared_dir}/config/twitter_auth.yml #{current_release}/config/twitter_auth.yml"
   run "ln -nfs   #{deploy_to}/#{shared_dir}/system #{current_release}/public/system"
   #run "ln -nfs /mnt/shared/system #{current_release}/public/system"
-  # static site error files
-  run "ln -s   #{deploy_to}/#{shared_dir}/404.html #{current_release}/404.html"
-  run "ln -s   #{deploy_to}/#{shared_dir}/422.html #{current_release}/422.html"
-  run "ln -s   #{deploy_to}/#{shared_dir}/500.html #{current_release}/500.html"
   # initializers
   run "rm #{current_release}/config/initializers/airbrake.rb"
   run "ln -s   #{deploy_to}/#{shared_dir}/config/initializers/airbrake.rb #{current_release}/config/initializers/airbrake.rb"
