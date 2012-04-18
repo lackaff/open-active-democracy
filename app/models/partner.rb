@@ -163,9 +163,9 @@ class Partner < ActiveRecord::Base
       ["missing","missing","missing","missing","missing","missing","missing","missing","missing"]
     end
   end
-  
-  private
+
   def on_deleted_entry(new_state, event)
-    deleted_at = Time.now
-  end  
+    self.deleted_at = Time.now
+    save(:validate => false)
+  end
 end

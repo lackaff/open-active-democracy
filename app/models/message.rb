@@ -45,11 +45,13 @@ class Message < ActiveRecord::Base
       self.notifications << NotificationMessage.new(:sender => self.sender, :recipient => self.recipient)
     end
     self.sent_at = Time.now
+    save(:validate => false)
   end
   
   def on_read_entry(new_state, event)
     self.deleted_at = nil
     self.read_at = Time.now
+    save(:validate => false)
     for n in self.notifications
       n.read!
       Rails.cache.delete("views/" + n[:type].downcase + "-" + n.id.to_s)
@@ -58,6 +60,7 @@ class Message < ActiveRecord::Base
   
   def on_deleted_entry(new_state, event)
     self.deleted_at = Time.now
+    save(:validate => false)
     for n in self.notifications
       n.delete!
     end    

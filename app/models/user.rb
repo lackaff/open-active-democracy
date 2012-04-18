@@ -317,7 +317,8 @@ class User < ActiveRecord::Base
    def on_pending_entry(new_state = nil, event = nil)
     self.probation_at = nil
     self.suspended_at = nil
-    self.deleted_at = nil    
+    self.deleted_at = nil
+    save(:validate => false) if persisted?
   end
 
   # Activates the user in the database.
@@ -331,7 +332,8 @@ class User < ActiveRecord::Base
     for e in endorsements.suspended
       e.unsuspend!
     end
-    self.warnings_count = 0    
+    self.warnings_count = 0
+    save(:validate => false)
   end  
   
   def on_deleted_entry(new_state, event)
@@ -355,10 +357,12 @@ class User < ActiveRecord::Base
     #  c.destroy
     #end
     self.facebook_uid = nil
+    save(:validate => false)
   end
   
   def on_probation_entry(new_state, event)
     self.probation_at = Time.now
+    save(:validate => false)
     ActivityUserProbation.create(:user => self)
   end
   
@@ -367,6 +371,7 @@ class User < ActiveRecord::Base
     for e in endorsements.active
       e.suspend!
     end
+    save(:validate => false)
   end  
   
   def resend_activation

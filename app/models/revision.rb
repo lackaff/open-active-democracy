@@ -97,11 +97,13 @@ class Revision < ActiveRecord::Base
     point.author_sentence += ", #{tr("changes","model/revision")} " + point.editors.collect{|a| a[0].login}.to_sentence if point.editors.size > 0
     point.published_at = Time.now
     point.save(:validate => false)
+    save(:validate => false)
     user.increment!(:point_revisions_count)    
   end
   
   def on_archived_entry
     self.published_at = nil
+    save(:validate => false)
   end
   
   def on_deleted_entry

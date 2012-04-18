@@ -714,9 +714,9 @@ class Priority < ActiveRecord::Base
     end
   end  
 
-  private
   def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
+    save(:validate => false) if persisted?
     ActivityPriorityNew.create(:user => user, :priority => self)    
   end
   
@@ -728,10 +728,12 @@ class Priority < ActiveRecord::Base
       e.destroy
     end
     self.deleted_at = Time.now
+    save(:validate => false)
   end
   
   def on_delete_entry(new_state, event)
     self.deleted_at = nil
+    save(:validate => false)
   end  
   
   def on_buried_entry(new_state, event)

@@ -41,6 +41,7 @@ class DocumentRevision < ActiveRecord::Base
   
   def on_published_entry(new_state = nil, event = nil)
     self.published_at = Time.now
+    save(:validate => false) if persisted?
     self.auto_html_prepare
     begin
       Timeout::timeout(5) do   #times out after 5 seconds
@@ -94,6 +95,7 @@ class DocumentRevision < ActiveRecord::Base
   
   def on_archived_entry(new_state, event)
     self.published_at = nil
+    save(:validate => false)
   end
   
   def on_deleted_entry(new_state, event)
@@ -141,6 +143,7 @@ class DocumentRevision < ActiveRecord::Base
     if request
       self.ip_address = request.remote_ip
       self.user_agent = request.env['HTTP_USER_AGENT']
+      save(:validate => false)
     end
   end
   
