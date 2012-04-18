@@ -22,7 +22,7 @@ class Comment < ActiveRecord::Base
   
   validates_presence_of :content
 
-  define_index do                        event :delete, transitions_to: :deleted
+  define_index do
     indexes content
     indexes category_name, :facet=>true, :as=>"category_name"
     has partner_id, :as=>:partner_id, :type => :integer
