@@ -18,19 +18,39 @@
         <%= hidden_field_tag :tag_names, @tag_names %>
     <% end %>
 
-    <h3><%= tr("Create a new priority", "views/priorities/form") %></h3>
-    <br>
+    <h3><%= tr("Step 1: Share your new priority", "views/priorities/form") %></h3>
+
     <div id="your_priority" class="form_header">
-      <%= tr("What is your priority?", "views/priorities/form") %>
+      <%= tr("Describe your priority", "views/priorities/form") %>
       <span class="red">*</span>
     </div>
-
+    <div class="tiny_info">
+      <em><%= tr("Use a few words to briefly explain your idea.", "views/priorities/form") %></em>
+    </div>
     <span class="priority_name">
     <%= f.text_field :name, :size => 60, :maxlength => 60, :autocomplete =>"off" %>
   </span>
 
     <br><br>
 
+        <div id="priority_category">
+          <div class="form_header">
+              <%= tr("Select area", "views/priorities/form") %>
+              <span class="red">*</span><br>
+              <div class="tiny_info">
+                <em><%= tr("Choose the local area that your priority will most benefit.", "views/priorities/form") %></em>
+            <select name="local">
+            <option value="Burlington">Burlington</option>
+            <option value="Graham">Graham</option>
+            <option value="Mebane">Mebane</option>
+            <option value="Elon">Elon</option>
+            <option value="Gibsonville">Gibsonville</option>
+            <option value="alamance County">Alamance County</option>
+            </select>
+              </div>
+          </div>
+
+        </div>
 
     <% if current_partner and current_partner.required_tags %>
         <div id="priority_category">
@@ -55,9 +75,8 @@
           <div class="form_header">
             <%= tr("Select category", "views/priorities/form") %>
             <span class="red">*</span><br>
-
             <div class="tiny_info">
-              <p><%= tr("It‘s important to choose a category for the idea. If the idea is chosen to appear before the administration of Reykjavík City, the category will decide which divisional committee will discuss it.", "views/priorities/form") %></p>
+              <em><%= tr("Select the most relevant category for your priority. You can add additional categories below.", "views/priorities/form") %></em>
             </div>
 
           </div>
@@ -69,28 +88,15 @@
           <% end %>
         </div>
 
-        <% if Government.current.default_tags_checkbox and Government.current.default_tags_checkbox!="" and not (current_partner and current_partner.required_tags) %>
-            <br>
-            <div id="priority_category2">
-<b style="color:red; font-size: 14px; line-height: 140%;">Ef setja á inn hugmynd að hverfisverkefni, undir Betri hverfi, verður fyrst að <a href="http://betrireykjavik.is/about/choose_partner" style="text-decoration:underline !important;">velja hverfið hér</a> og smella síðan á hnappinn Settu inn nýja hugmynd.</b>
-
-<br />
-<br />
-              <div class="form_header">
-                <%= tr("Select neighborhood (if applicable)", "views/priorities/form") %>
-                <br>
-              </div>
-              <% Government.current.default_tags_checkbox.split(",").each_with_index do |special_tag, i| %>
-                  <%= check_box_tag "special_checkbox_tag_#{i}", special_tag %>
-                  <span class="Chapter_name_2"><%= special_tag %></span>
-              <% end %>
-            </div>
-        <% end %>
+        
 
         <br>
 
         <div class="form_header">
-          <%= tr("Write your own categories, separated by comma", "views/priorities/form") %>
+          <%= tr("Provide your own categories (separated by comma)", "views/priorities/form") %>
+          <div class="tiny_info">
+              <em><%= tr("Examples include jobs, parks, or transportation.", "views/priorities/form") %></em>
+          </div>
         </div>
 
         <span class="custom_tag">
@@ -100,10 +106,15 @@
         <br/>
         <br/>
     <% end %>
-    <br/>
+    <hr/>
+    <h3><%= tr("Step 2: Add a point that supports your priority", "views/priorities/form") %></h3>
     <div class="form_header">
-      <%= tr("Add a point in support or against", "views/priorities/form") %>
+      <%= tr("Add a point", "views/priorities/form") %>
       <span class="red">*</span>
+      <div class="tiny_info"><em>
+              <%= tr("Provide a brief title that captures your point.", "views/priorities/form") %>
+      </em>
+      </div>
     </div>
 
     <%= f.fields_for(:points) do |point_form| %>
@@ -112,21 +123,7 @@
             <%= point_form.text_field :name, :size => 60, :maxlength => 60 %>
           </div>
           <div class="field_label">
-            <div class="tiny_info"><em>
-              <%= tr("To convince other people about this priority a strong point is important", "views/priorities/form") %>
-            </em></div>
-          </div>
-        </div>
-        <div class="field form_header">
-          <div class="field_label">
-            <div id="point_supports">
-              <%= point_form.radio_button :value, 1, :checked=>true %>
-              <span class="point_supports_label"><%= tr("Yes, this point supports this priority", "views/priorities/form") %></span>
-            </div>
-            <div id="point_opposes">
-              <%= point_form.radio_button :value, -1 %>
-              <span class="point_opposes_label"><%= tr("No, this point is against this priority", "views/priorities/form") %></span>
-            </div>
+
           </div>
         </div>
         <br>
@@ -135,13 +132,16 @@
             <%= tr("Explain your point.", "view/priorities/_form") %>
             <span class="characters"><span id="pointContentDown"></span> <%= tr("characters left", "view/priorities/_form") %></span>
             <span class="red">*</span>
+             <div class="tiny_info"><em>
+              <%= tr("Explain your point in a few sentences to help convince others that your priority is important.", "views/priorities/form") %>
+              </em>
+              </div>
           </div>
           <div class="field_box">
             <%= point_form.text_area :content, :id => 'pointContent', :button => 'submit', :rows => 5, :cols => 60, :maxLength => 500 %>
+            <input type="hidden" id="priority_points_attributes_0_value_1" name="priority[points_attributes][0][value]" value="1">
           </div>
-          <div class="tiny_info_no_pad">
-            <%= tr("Other people will be able to edit your points, similar to Wikipedia", "views/priorities/form") %>
-          </div>
+
         </div>
 
         <br>
@@ -149,6 +149,10 @@
         <div class="field">
           <div class="form_header">
             <%= tr("Add a link to an external website", "views/priorities/form") %>
+              <div class="tiny_info"><em>
+              <%= tr("Provide a link that provides more information, such as a <a href='http://thetimesnews.com'> Burlington Times-News</a> story.", "views/priorities/form") %>
+      </em>
+      </div>
           </div>
           <div class="field_box">
             <%= point_form.text_field :website, :size => 50 %>
