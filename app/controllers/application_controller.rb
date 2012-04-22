@@ -153,6 +153,13 @@ class ApplicationController < ActionController::Base
 
   # Will either fetch the current partner or return nil if there's no subdomain
   def current_partner
+    
+    return nil
+=begin  
+    if Rails.env.development? 
+      return nil
+    end
+=end
     if Rails.env.development?
       begin
         if params[:partner_short_name]
@@ -237,7 +244,7 @@ class ApplicationController < ActionController::Base
   
   def check_geoblocking
     @country_code = Thread.current[:country_code] = (session[:country_code] ||= GeoIP.new(Rails.root.join("lib/geoip/GeoIP.dat")).country(request.remote_ip)[3]).downcase
-    @country_code = "is" if @country_code == nil or @country_code == "--"
+    @country_code = "en" if @country_code == nil or @country_code == "--"
     @iso_country = Tr8n::IsoCountry.find_by_code(@country_code.upcase)
     Rails.logger.info("Geoip country: #{@country_code} - locale #{session[:locale]} - #{current_user ? (current_user.email ? current_user.email : current_user.login) : "Anonymous"}")
     Rails.logger.info(request.user_agent)

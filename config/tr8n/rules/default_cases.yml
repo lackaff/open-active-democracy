@@ -3,7 +3,80 @@
 # Tr8n Default Language Cases
 #
 #############################################################################
-
+en:
+  case1:
+    keyword:          "nom"
+    latin_name:       "Nominative"
+    native_name:      "Nominative" 
+    description:      "Used for any noun or pronoun that is the  subject of a verb"
+  case2:
+    keyword:          "obj"
+    latin_name:       "Objective"
+    native_name:      "Objective" 
+    description:      "Used in the direct object, indirect object, object of preposition, object complement, and subject of an infinitive"
+  case3:
+    keyword:          "pos"
+    latin_name:       "Possessive"
+    native_name:      "Possessive" 
+    description:      "Used to indicate possession (i.e., ownership). It is usually created by adding 's to the word"
+    rules:
+      rule1:
+        multipart:    false 
+        gender:       none
+        part1:        ends_in
+        value1:       "s"
+        operation:    append
+        value:        "'"
+      rule2:
+        multipart:    false 
+        gender:       none
+        part1:        does_not_end_in
+        value1:       "s"
+        operation:    append
+        value:        "'s"
+  case4:
+    keyword:          "ord"
+    latin_name:       "Ordinal"
+    native_name:      "Ordinal" 
+    description:      "The adjective form of the cardinal numbers"
+    rules:            
+      rule1:
+        multipart:    true 
+        gender:       none
+        part1:        ends_in
+        value1:       "1"
+        operator:     and
+        part2:        does_not_end_in
+        value2:       "11"
+        operation:    append
+        value:        "st"
+      rule2:
+        multipart:    true 
+        gender:       none
+        part1:        ends_in
+        value1:       "2"
+        operator:     and
+        part2:        does_not_end_in
+        value2:       "12"
+        operation:    append
+        value:        "nd"
+      rule3:
+        multipart:    true 
+        gender:       none
+        part1:        ends_in
+        value1:       "3"
+        operator:     and
+        part2:        does_not_end_in
+        value2:       "13"
+        operation:    append
+        value:        "rd"
+      rule4:
+        multipart:    false 
+        gender:       none
+        part1:        ends_in
+        value1:       "0,4,5,6,7,8,9,11,12,13"
+        operation:    append
+        value:        "th" 
 en-US:
   case1:
     keyword:          "nom"

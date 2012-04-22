@@ -51,6 +51,9 @@ class InstallController < ApplicationController
   end
   
   def create_admin_user
+    params[:user].delete :captcha
+    params[:user].delete :captcha_key
+    
     @user = User.new(params[:user])
     if @user.save
       cookies.delete :auth_token

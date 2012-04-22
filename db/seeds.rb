@@ -8,22 +8,57 @@
 
 # Create Categories
 
-# Create Portlet Templates
-Category.create(:name=>"Welfare", :description => "")
-Category.create(:name=>"Law", :description => "")
-Category.create(:name=>"Arts", :description => "")
-Category.create(:name=>"Sports", :description => "")
-Category.create(:name=>"Environment", :description => "")
-Category.create(:name=>"Police", :description => "")
-Category.create(:name=>"Public services", :description => "")
-Category.create(:name=>"Military", :description => "")
-Category.create(:name=>"Economy", :description => "")
-Category.create(:name=>"Constitution", :description => "")
-Category.create(:name=>"Banks", :description => "")
-Category.create(:name=>"Entertainment", :description => "")
-Category.create(:name=>"Immigration", :description => "")
-Category.create(:name=>"Other", :description => "")
 
+if true
+  Category.create(:name=>"Welfare", :description=>"Enter category description")
+  Category.create(:name=>"Law", :description=>"Enter category description")
+  Category.create(:name=>"Arts", :description=>"Enter category description")
+  Category.create(:name=>"Sports", :description=>"Enter category description")
+  Category.create(:name=>"Environment", :description=>"Enter category description")
+  Category.create(:name=>"Police", :description=>"Enter category description")
+  Category.create(:name=>"Public services", :description=>"Enter category description")
+  Category.create(:name=>"Military", :description=>"Enter category description")
+  Category.create(:name=>"Economy", :description=>"Enter category description")
+  Category.create(:name=>"Constitution", :description=>"Enter category description")
+  Category.create(:name=>"Banks", :description=>"Enter category description")
+  Category.create(:name=>"Entertainment", :description=>"Enter category description")
+  Category.create(:name=>"Immigration", :description=>"Enter category description")
+  Category.create(:name=>"Other", :description=>"Enter category description")
+  
+else
+  unless partner = Partner.find_by_short_name("dev")
+    partner = Partner.create(:name=>"development", :short_name=>"dev")
+  end
+  Category.create(:name=>"User interface", :partner_id=>partner.id)
+  Category.create(:name=>"General", :partner_id=>partner.id)
+  Category.create(:name=>"Localization", :partner_id=>partner.id)
+  Category.create(:name=>"Data sources", :partner_id=>partner.id)
+end
+
+# Create required entries in tag table
+cat = Category.all
+cat.each do |c|
+   Tag.create(:name=>c.name, :title=>c.name, :slug=>c.name.downcase)
+ end
+
+p=Partner.new
+p.name = "The European Union and EEA"
+p.short_name = "eu"
+p.geoblocking_enabled = true
+p.geoblocking_open_countries = Tr8n::IsoCountry::EU_AND_EEA_COUNTRIES.join(",")
+p.save
+
+p=Partner.new
+p.name = "Development"
+p.short_name = "dev"
+p.save
+
+p=Partner.new
+p.name = "The World"
+p.short_name = "world"
+p.save
+
+# Create Portlet Templates
 pc=PortletTemplateCategory.new
 pc.name="Priorities"
 pc.weight = 1

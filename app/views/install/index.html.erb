@@ -54,6 +54,15 @@
 				  		<%= f.text_field :target, :size => 40, :maxlength => 30 %>
 						</div>
 					</div>	
+					
+					<div class="field">
+						<div class="field_label">
+							<%= tr("Site description", "view/install/index")%>
+						</div>
+						<div class="field_box">
+				  		<%= f.text_field :description, :size => 40, :maxlength => 30 %>
+						</div>
+					</div>
 
           <div class="field">
             <div class="field_label">
@@ -64,6 +73,14 @@
               <%= f.text_field :domain_name, :size => 40, :maxlength => 60 %>
             </div>
           </div>
+							
+					<div class="field">
+						<div class="field_label">
+							Language:
+							<%= f.select :language_code, Government::CURRENT_LANGUAGES %>
+						</div>
+					</div>
+			
 					<div class="field">
 						<div class="field_label">
 							<%= tr("Administrator Name", "view/install/index")%>

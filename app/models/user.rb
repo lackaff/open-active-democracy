@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
 
   extend ActiveSupport::Memoizable
   require 'paperclip'
-  include SimpleCaptcha::ModelValidation
+  #include SimpleCaptcha::ModelValidation
 
   #validates_captcha :on => :create, :message => tr("Please reenter human verification number","captcha")
 

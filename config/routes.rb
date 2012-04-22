@@ -13,6 +13,8 @@ OpenActiveDemocracy::Application.routes.draw do
   match '/admin/all_flagged' => 'admin#all_flagged'
   match '/admin/all_deleted' => 'admin#all_deleted'
   match '/users/list_suspended' => 'users#list_suspended'
+  # dp adding
+  # match '/priorites/update_status/:id' => 'priorities#update_status'
 
   resources :partners do
     member do
@@ -99,6 +101,7 @@ OpenActiveDemocracy::Application.routes.draw do
       get :opposers
       get :discussions
       put :create_short_url
+     # put :update_status
       post :tag
       put :tag_save
       get :points

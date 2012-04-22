@@ -8,6 +8,16 @@
 #
 #############################################################################
 
+en:
+  rule1:
+    operator:   is 
+    value:      male
+  rule2:
+    operator:   is 
+    value:      female
+  rule3:
+    operator:   is 
+    value:      unknown
 en-US:
   rule1:
     operator:   is 

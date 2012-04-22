@@ -155,7 +155,7 @@ class UserMailer < ActionMailer::Base
       elsif @government.layout.include?("better_iceland")
         File.read(Rails.root.join("app/assets/images/logos/betraIsland-merki.png"))
       else
-        File.read(Rails.root.join("app/assets/images/logos/YourPriorities_large.png"))
+        File.read(Rails.root.join("public/images/your_logo.gif"))
       end
     end
 
